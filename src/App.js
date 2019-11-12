@@ -1,25 +1,36 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import styled from 'styled-components'
+import ImageContainer from './ImageContainer'
+import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography'
+
+const MainContainer = styled.div`
+  display: flex;
+`
+
+const HeaderContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  margin: 50px;
+`
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <MainContainer>
+      <Grid container>
+        <Grid item xs={12}>
+          <HeaderContainer maxWidth="md">
+            <Typography variant="h2">
+              Welcome to APOD Viewer!
+            </Typography>
+          </HeaderContainer>
+        </Grid>
+        <Grid item xs={12}>
+          <ImageContainer/>
+        </Grid>
+      </Grid>
+    </MainContainer>
   );
 }
 
