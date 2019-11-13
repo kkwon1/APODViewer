@@ -1,14 +1,27 @@
 import React from 'react';
 import styled from 'styled-components'
 import Container from '@material-ui/core/Container'
-import Button from '@material-ui/core/Button'
+import IconButton from '@material-ui/core/IconButton'
+import ArrowForwardIosRoundedIcon from '@material-ui/icons/ArrowForwardIosRounded'
+import ArrowBackIosRoundedIcon from '@material-ui/icons/ArrowBackIosRounded'
+
+const MainContainer = styled(Container)`
+  display: flex;
+  justify-content: space-around;
+  flex-direction: row;
+  margin-bottom: 100px;
+`
 
 const ImageContainerWrapper = styled(Container)`
   display: flex;
   justify-content: center;
   flex-direction: row;
-  height:100%;
-  margin-bottom: 100px;
+`
+
+const ButtonContainer = styled.div`
+  cursor: pointer;
+  display: flex;
+  align-items: center;
 `
 
 class ImageContainer extends React.Component {
@@ -31,11 +44,21 @@ class ImageContainer extends React.Component {
 
   render() {
     return (
-      <ImageContainerWrapper maxWidth="lg">
-        <Button>previous button</Button>
-        <img src={this.state.imageUrl}/>
-        <Button>forward button</Button>
-      </ImageContainerWrapper>
+      <MainContainer>
+        <ButtonContainer>
+          <IconButton>
+            <ArrowBackIosRoundedIcon fontSize='large'/>
+          </IconButton>
+        </ButtonContainer>
+        <ImageContainerWrapper maxWidth="lg">
+          <img src={this.state.imageUrl}/>
+        </ImageContainerWrapper>
+        <ButtonContainer>
+          <IconButton>
+            <ArrowForwardIosRoundedIcon fontSize='large'/>
+          </IconButton>
+        </ButtonContainer>
+      </MainContainer>
     )
   }
 }
