@@ -6,6 +6,7 @@ import ArrowForwardIosRoundedIcon from '@material-ui/icons/ArrowForwardIosRounde
 import ArrowBackIosRoundedIcon from '@material-ui/icons/ArrowBackIosRounded'
 import moment from 'moment'
 import Typography from '@material-ui/core/Typography'
+import ActionsContainer from './ActionsContainer'
 
 const MainContainer = styled(Container)`
   display: flex;
@@ -24,7 +25,7 @@ const ImageContainerWrapper = styled(Container)`
   justify-content: center;
   flex-direction: row;
   margin-top: 50px;
-  margin-bottom: 100px;
+  margin-bottom: 20px;
 `
 
 const ButtonContainer = styled.div`
@@ -45,10 +46,13 @@ const HeaderContainer = styled.div`
   margin-top: 50px;
 `
 
+const Image = styled.img`
+  border-radius: 25px;
+`
+
 const baseUrl = "https://api.nasa.gov/planetary/apod"
 const apiKey = process.env.REACT_APP_NASA_API_KEY
 const dateFormat = "YYYY-MM-DD"
-
 
 // TODO: Refactor this huge component into smaller chunks. Pass data down as props from parent
 class ImageContainer extends React.Component {
@@ -89,7 +93,7 @@ class ImageContainer extends React.Component {
     return (
       <MainContainer>
         <HeaderContainer maxWidth="md">
-          <Typography variant="h2">
+          <Typography variant="h3">
             {this.state.title}
           </Typography>
         </HeaderContainer>
@@ -100,7 +104,7 @@ class ImageContainer extends React.Component {
             </IconButton>
           </ButtonContainer>
           <ImageContainerWrapper maxWidth="lg">
-            <img src={this.state.imageUrl}/>
+            <Image src={this.state.imageUrl}/>
           </ImageContainerWrapper>
           <ButtonContainer>
             <IconButton disabled={this.state.imageDateIsToday} onClick={e => this.updateImageDate(e, 1)}>
@@ -108,8 +112,9 @@ class ImageContainer extends React.Component {
             </IconButton>
           </ButtonContainer>
         </ImageSection>
+        <ActionsContainer/>
         <TextContainer>
-          <Typography variant="body1">
+          <Typography variant="subtitle1">
             {this.state.text}
           </Typography>
         </TextContainer>
