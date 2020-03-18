@@ -50,9 +50,13 @@ const Image = styled.img`
   border-radius: 25px;
 `
 
-const baseUrl = "https://api.nasa.gov/planetary/apod"
-const apiKey = process.env.REACT_APP_NASA_API_KEY
 const dateFormat = "YYYY-MM-DD"
+// TODO: make the url config. This is dev env but once service is deployed we want to call diff endpoint
+const baseUrl = "http://localhost:8081/api/v1/"
+
+// TODO: Come up with a way to cache the data. As user goes through images, pre-fetch more images to make loading times shorter
+let apodData = []
+let currentIndex = 0
 
 // TODO: Refactor this huge component into smaller chunks. Pass data down as props from parent
 class ImageContainer extends React.Component {
@@ -67,25 +71,37 @@ class ImageContainer extends React.Component {
     }
   }
 
-  // TODO: Temporary solution to hide API Key in github until backend service is ready
   componentDidMount() {
     this.getImageData(this.state.currentImageDate)
   }
 
+  // TODO: If user is viewing the last image we retrieved, make another call to backend for 30 new photos
   updateImageDate(event, numDaysToAdd) {
     this.setState({currentImageDate: this.state.currentImageDate.add(numDaysToAdd, "days")})
-    this.getImageData(this.state.currentImageDate)
+    currentIndex -= numDaysToAdd
+    let apod = apodData[currentIndex]
+    if (apod) {
+      this.setState({imageUrl: apod.url})
+      this.setState({imageDateIsToday: dateIsToday(apod.date)})
+      this.setState({text: apod.explanation})
+      this.setState({title: apod.title})
+    }
   }
 
   getImageData(date) {
-    fetch(`${baseUrl}?api_key=${apiKey}&date=${date.format(dateFormat)}`)
+    fetch(`${baseUrl}apod/batch/?count=30`)
     .then(res => res.json())
     .then(
       (result) => {
-      this.setState({imageUrl: result.url})
-      this.setState({imageDateIsToday: dateIsToday(result.date)})
-      this.setState({text: result.explanation})
-      this.setState({title: result.title})
+        // Decode from base64 to string, and then parse the object
+        apodData = JSON.parse(atob(result))
+        apodData = apodData.reverse()
+        console.log(apodData)
+        let latestApod = apodData[currentIndex]
+        this.setState({imageUrl: latestApod.url})
+        this.setState({imageDateIsToday: dateIsToday(latestApod.date)})
+        this.setState({text: latestApod.explanation})
+        this.setState({title: latestApod.title})
     })
   }
 
@@ -124,9 +140,10 @@ class ImageContainer extends React.Component {
 }
 
 function dateIsToday(apodDate) {
-  let now = moment()
+  let now = moment().format(dateFormat)
+  
   // apodDate is today or future date
-  return now <= moment(apodDate)
+  return now <= apodDate
 }
 
 export default ImageContainer
