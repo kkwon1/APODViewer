@@ -16,12 +16,12 @@ const MainContainer = styled(Container)`
   flex-direction: column;
 `
 
-const ImageSection = styled.div`
+const MediaSection = styled.div`
   display:flex;
   height: 800px;
 `
 
-const ImageContainerWrapper = styled(Container)`
+const MediaContainerWrapper = styled(Container)`
   display: flex;
   justify-content: center;
   flex-direction: row;
@@ -72,7 +72,7 @@ class MediaContainer extends React.Component {
   componentDidMount() {
     this.getApodData()
   }
-  
+
   // TODO: If user is viewing the last image we retrieved, make another call to backend for 30 new photos
   updateImageDate(event, numDaysToAdd) {
     this.setState({currentImageDate: this.state.currentImageDate.add(numDaysToAdd, "days")})
@@ -105,21 +105,21 @@ class MediaContainer extends React.Component {
             {this.state.title}
           </Typography>
         </HeaderContainer>
-        <ImageSection>
+        <MediaSection>
           <ButtonContainer>
             <IconButton onClick={e => this.updateImageDate(e, -1)}>
               <ArrowBackIosRoundedIcon fontSize='large'/>
             </IconButton>
           </ButtonContainer>
-          <ImageContainerWrapper maxWidth="lg">
+          <MediaContainerWrapper maxWidth="lg">
             <MediaDisplayer mediaType={this.state.mediaType} url={this.state.mediaUrl}></MediaDisplayer>
-          </ImageContainerWrapper>
+          </MediaContainerWrapper>
           <ButtonContainer>
             <IconButton disabled={this.state.mediaDateIsToday} onClick={e => this.updateImageDate(e, 1)}>
               <ArrowForwardIosRoundedIcon fontSize='large'/>
             </IconButton>
           </ButtonContainer>
-        </ImageSection>
+        </MediaSection>
         <ActionsContainer/>
         <TextContainer>
           <Typography variant="subtitle1">
