@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import ImageContainer from './ImageContainer'
+import MediaContainer from './MediaContainer'
 import Grid from '@material-ui/core/Grid'
 import NavBar from './NavBar'
 
@@ -16,7 +16,7 @@ function App() {
           <NavBar/>
         </Grid>
         <Grid item xs={12}>
-          <ImageContainer/>
+          <MediaContainer/>
         </Grid>
       </Grid>
     </MainContainer>

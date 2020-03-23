@@ -7,6 +7,7 @@ import ArrowBackIosRoundedIcon from '@material-ui/icons/ArrowBackIosRounded'
 import moment from 'moment'
 import Typography from '@material-ui/core/Typography'
 import ActionsContainer from './ActionsContainer'
+import MediaDisplayer from './MediaDisplayer';
 
 const MainContainer = styled(Container)`
   display: flex;
@@ -46,10 +47,6 @@ const HeaderContainer = styled.div`
   margin-top: 50px;
 `
 
-const Image = styled.img`
-  border-radius: 25px;
-`
-
 const dateFormat = "YYYY-MM-DD"
 // TODO: make the url config. This is dev env but once service is deployed we want to call diff endpoint
 const baseUrl = "http://localhost:8081/api/v1/"
@@ -59,36 +56,34 @@ let apodData = []
 let currentIndex = 0
 
 // TODO: Refactor this huge component into smaller chunks. Pass data down as props from parent
-class ImageContainer extends React.Component {
+class MediaContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      imageUrl: null,
-      imageDateIsToday: false,
+      mediaUrl: null,
+      mediaDateIsToday: false,
       currentImageDate: moment(),
       text: "",
-      title: ""
+      title: "",
+      mediaType: ""
     }
   }
 
   componentDidMount() {
-    this.getImageData(this.state.currentImageDate)
+    this.getApodData()
   }
-
+  
   // TODO: If user is viewing the last image we retrieved, make another call to backend for 30 new photos
   updateImageDate(event, numDaysToAdd) {
     this.setState({currentImageDate: this.state.currentImageDate.add(numDaysToAdd, "days")})
     currentIndex -= numDaysToAdd
     let apod = apodData[currentIndex]
     if (apod) {
-      this.setState({imageUrl: apod.url})
-      this.setState({imageDateIsToday: dateIsToday(apod.date)})
-      this.setState({text: apod.explanation})
-      this.setState({title: apod.title})
+      setApodData(this, apod)
     }
   }
 
-  getImageData(date) {
+  getApodData() {
     fetch(`${baseUrl}apod/batch/?count=30`)
     .then(res => res.json())
     .then(
@@ -98,10 +93,7 @@ class ImageContainer extends React.Component {
         apodData = apodData.reverse()
         console.log(apodData)
         let latestApod = apodData[currentIndex]
-        this.setState({imageUrl: latestApod.url})
-        this.setState({imageDateIsToday: dateIsToday(latestApod.date)})
-        this.setState({text: latestApod.explanation})
-        this.setState({title: latestApod.title})
+        setApodData(this, latestApod)
     })
   }
 
@@ -120,10 +112,10 @@ class ImageContainer extends React.Component {
             </IconButton>
           </ButtonContainer>
           <ImageContainerWrapper maxWidth="lg">
-            <Image src={this.state.imageUrl}/>
+            <MediaDisplayer mediaType={this.state.mediaType} url={this.state.mediaUrl}></MediaDisplayer>
           </ImageContainerWrapper>
           <ButtonContainer>
-            <IconButton disabled={this.state.imageDateIsToday} onClick={e => this.updateImageDate(e, 1)}>
+            <IconButton disabled={this.state.mediaDateIsToday} onClick={e => this.updateImageDate(e, 1)}>
               <ArrowForwardIosRoundedIcon fontSize='large'/>
             </IconButton>
           </ButtonContainer>
@@ -146,4 +138,13 @@ function dateIsToday(apodDate) {
   return now <= apodDate
 }
 
-export default ImageContainer
+
+function setApodData(imgContainer, apod) {
+  imgContainer.setState({mediaUrl: apod.url})
+  imgContainer.setState({mediaDateIsToday: dateIsToday(apod.date)})
+  imgContainer.setState({text: apod.explanation})
+  imgContainer.setState({title: apod.title})
+  imgContainer.setState({mediaType: apod.media_type})
+}
+
+export default MediaContainer
