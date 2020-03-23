@@ -11,6 +11,7 @@ const NameContainer = styled(Typography)`
   padding-left: 35px;
 `
 
+// TODO: Add a drawer component that slides the menu
 function NavBar() {
   return(
     <AppBar position="static" color="primary">

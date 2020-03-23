@@ -1,3 +1,9 @@
+# APOD Viewer
+This is a React app that allows users to view NASA's Astronomy Picture Of the Day (APOD). You can find the official site [here](https://apod.nasa.gov/apod/astropix.html).
+
+It interacts with the backend service [APODViewerService](https://github.com/kkwon1/APODViewerService) to retrieve data, and save user specific info.
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
