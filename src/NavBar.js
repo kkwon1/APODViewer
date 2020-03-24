@@ -5,26 +5,72 @@ import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import IconButton from '@material-ui/core/IconButton'
 import MenuIcon from '@material-ui/icons/Menu'
+import AccountCircle from '@material-ui/icons/AccountCircle'
+
+const NavbarContainer = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+`
+
+const MainSection = styled.div`
+  display: flex;
+  width: 13%;
+  align-items: center;
+  justify-content: space-between;
+`
 
 const NameContainer = styled(Typography)`
   display: flex;
-  padding-left: 35px;
+`
+
+const ProfileContainer = styled.div`
+  display: flex;
+  align-items:  center;
 `
 
 // TODO: Add a drawer component that slides the menu
-function NavBar() {
-  return(
-    <AppBar position="static" color="primary">
-      <Toolbar variant="dense">
-          <IconButton edge="start" color="inherit" aria-label="menu">
-            <MenuIcon/>
-          </IconButton>
-          <NameContainer variant="h5" color="inherit">
-            APOD Viewer
-          </NameContainer>
-        </Toolbar>
-    </AppBar>
-  )   
+class NavBar extends React.Component {
+  componentDidMount() {
+    console.log(this.props)
+  }
+
+  render() {
+    return(
+      <AppBar position="static" color="primary">
+        <Toolbar variant="dense">
+          <NavbarContainer>
+            <MainSection>
+              <IconButton edge="start" color="inherit" aria-label="menu">
+                  <MenuIcon/>
+                </IconButton>
+                <NameContainer variant="h5" color="inherit">
+                  APOD Viewer
+                </NameContainer>
+            </MainSection>
+            <ProfileContainer>
+              { ProfileSection(this.props) }
+            </ProfileContainer>
+          </NavbarContainer>
+          </Toolbar>
+      </AppBar>
+    )
+  }
+}
+
+// TODO: Write some tests you rascal
+function ProfileSection(props) {
+  if (props.isLoggedIn) {
+    return (
+        <IconButton edge="start" color="inherit" aria-label="menu">
+          <AccountCircle/>
+        </IconButton>
+    )
+  } else {
+    return(
+      <div>LOGIN AND SIGNUP</div>
+    )
+  }
 }
 
 export default NavBar
