@@ -1,8 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
-import MediaContainer from './MediaContainer'
+import MediaContainer from './scenes/APODViewer/components/MediaContainer'
 import Grid from '@material-ui/core/Grid'
-import NavBar from './NavBar'
+import NavBar from './scenes/NavBar/NavBar'
 
 const MainContainer = styled.div`
   display: flex;

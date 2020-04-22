@@ -6,7 +6,7 @@ import Toolbar from '@material-ui/core/Toolbar'
 import IconButton from '@material-ui/core/IconButton'
 import MenuIcon from '@material-ui/icons/Menu'
 import AccountCircle from '@material-ui/icons/AccountCircle'
-import LoginSignupContainer from './Users/LoginSignupContainer'
+import LoginSignupContainer from '../Login/LoginSignupContainer'
 
 const NavbarContainer = styled.div`
   display: flex;
