@@ -79,7 +79,7 @@ class MediaContainer extends React.Component {
     currentIndex -= numDaysToAdd
     let apod = apodData[currentIndex]
     if (apod) {
-      setApodData(this, apod)
+      this.setApodData(apod)
     }
   }
 
@@ -93,8 +93,16 @@ class MediaContainer extends React.Component {
         apodData = apodData.reverse()
         console.log(apodData)
         let latestApod = apodData[currentIndex]
-        setApodData(this, latestApod)
+        this.setApodData(latestApod)
     })
+  }
+
+  setApodData(apod) {
+    this.setState({mediaUrl: apod.url})
+    this.setState({mediaDateIsToday: dateIsToday(apod.date)})
+    this.setState({text: apod.explanation})
+    this.setState({title: apod.title})
+    this.setState({mediaType: apod.media_type})
   }
 
   render() {
@@ -136,15 +144,6 @@ function dateIsToday(apodDate) {
   
   // apodDate is today or future date
   return now <= apodDate
-}
-
-
-function setApodData(imgContainer, apod) {
-  imgContainer.setState({mediaUrl: apod.url})
-  imgContainer.setState({mediaDateIsToday: dateIsToday(apod.date)})
-  imgContainer.setState({text: apod.explanation})
-  imgContainer.setState({title: apod.title})
-  imgContainer.setState({mediaType: apod.media_type})
 }
 
 export default MediaContainer
