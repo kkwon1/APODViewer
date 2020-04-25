@@ -1,8 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
-import MediaContainer from './MediaContainer'
+import MediaContainer from './scenes/APODViewer/components/MediaContainer'
 import Grid from '@material-ui/core/Grid'
-import NavBar from './NavBar'
 
 const MainContainer = styled.div`
   display: flex;
@@ -38,7 +37,6 @@ class App extends React.Component {
       <MainContainer>
         <Grid container>
           <Grid item xs={12}>
-            <NavBar isLoggedIn={this.state.isLoggedIn}/>
           </Grid>
           <Grid item xs={12}>
             <MediaContainer/>
