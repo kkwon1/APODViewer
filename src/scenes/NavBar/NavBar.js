@@ -1,6 +1,5 @@
 import React from 'react'
 import styled from 'styled-components'
-import Typography from '@material-ui/core/Typography'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import IconButton from '@material-ui/core/IconButton'
@@ -12,25 +11,17 @@ const NavbarContainer = styled.div`
   display: flex;
   width: 100%;
   justify-content: space-between;
-`
-
-const MainSection = styled.div`
-  display: flex;
-  width: 13%;
   align-items: center;
-  justify-content: space-between;
 `
 
-const NameContainer = styled(Typography)`
+const NameContainer = styled.div`
   display: flex;
-`
-
-const ProfileContainer = styled.div`
-  display: flex;
-  align-items:  center;
+  font-size: 2.5rem;
+  padding: 0.5rem;
 `
 
 // TODO: Add a drawer component that slides the menu
+// TODO: Fix the login/signup container. In fact, only show login. If user clicks it, they can see sign up after.
 class NavBar extends React.Component {
   componentDidMount() {
     console.log(this.props)
@@ -41,7 +32,12 @@ class NavBar extends React.Component {
       <AppBar position="static" color="primary">
         <Toolbar variant="dense">
           <NavbarContainer>
-            <MainSection>
+            <IconButton edge="start" color="inherit" aria-label="menu">
+              <MenuIcon/>
+            </IconButton>
+            <NameContainer fontSize='3rem'>APOD Viewer</NameContainer>
+            <div>Login</div>
+            {/* <MainSection>
               <IconButton edge="start" color="inherit" aria-label="menu">
                   <MenuIcon/>
                 </IconButton>
@@ -51,7 +47,7 @@ class NavBar extends React.Component {
             </MainSection>
             <ProfileContainer>
               { ProfileSection(this.props) }
-            </ProfileContainer>
+            </ProfileContainer> */}
           </NavbarContainer>
           </Toolbar>
       </AppBar>
