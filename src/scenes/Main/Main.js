@@ -37,7 +37,42 @@ const Image = styled.img`
   border-radius: 0.5rem;
 `
 
+const appStorage = window.localStorage
+
+// TODO: make the url config. This is dev env but once service is deployed we want to call diff endpoint
+const baseUrl = "http://localhost:8081/api/v1/"
+
 class Main extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      apodData: []
+    }
+  }
+
+  componentDidMount() {
+    let rawData = appStorage.getItem("apodData");
+    let cachedData = JSON.parse(rawData);
+    if (!cachedData || cachedData.length === 0) {
+      this.getApodData()
+    } else {
+      this.setState({apodData: cachedData});
+    }
+  }
+
+  getApodData() {
+    fetch(`${baseUrl}apod/batch/?count=30`)
+    .then(res => res.json())
+    .then(
+      (result) => {
+        // Decode from base64 to string, and then parse the object
+        let parsedData = JSON.parse(atob(result));
+        this.setState({apodData: parsedData.reverse()});
+        console.log(parsedData[0])
+        appStorage.setItem("apodData", JSON.stringify(this.state.apodData));
+    })
+  }
+
   render() {
     return (
       <MainContainer>
@@ -48,33 +83,13 @@ class Main extends React.Component {
         </BrowseContainer>
         <GridContainer>
           <GridList cellHeight={300} cols={3}>
-            <GridListTile>
-              <Link to="/apod">
-                <Image alt="test" src={"https://apod.nasa.gov/apod/image/2004/ISS002-E-7377_1024c.jpg"}/>
-              </Link>
-            </GridListTile>
-            <GridListTile>
-              <Link to="/apod">
-                <Image alt="test" src={"https://apod.nasa.gov/apod/image/2004/ISS002-E-7377_1024c.jpg"}/>
-              </Link>
-            </GridListTile>
-            <GridListTile>
-              <Image alt="test" src={"https://apod.nasa.gov/apod/image/2004/ISS002-E-7377_1024c.jpg"}/>
-            </GridListTile>
-            <GridListTile>
-              <Image alt="test" src={"https://apod.nasa.gov/apod/image/2004/ISS002-E-7377_1024c.jpg"}/>
-            </GridListTile>
-            <GridListTile>
-              <Image alt="test" src={"https://apod.nasa.gov/apod/image/2004/ISS002-E-7377_1024c.jpg"}/>
-            </GridListTile>
-            <GridListTile>
-              <Image alt="test" src={"https://apod.nasa.gov/apod/image/2004/ISS002-E-7377_1024c.jpg"}/>
-            </GridListTile>
-            {/* {tileData.map((tile) => (
-              <GridListTile key={tile.img} cols={tile.cols || 1}>
-                <img src={tile.img} alt={tile.title} />
+            {this.state.apodData.map((apodTile) => (
+              <GridListTile key={apodTile.date} cols={1}>
+                <Link to="/apod">
+                  <Image alt={apodTile.title} src={apodTile.url}/>
+                </Link>
               </GridListTile>
-            ))} */}
+            ))}
           </GridList>
         </GridContainer>
       </MainContainer>
