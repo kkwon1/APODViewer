@@ -4,11 +4,13 @@ import { Link } from 'react-router-dom'
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import Container from '@material-ui/core/Container'
+import ApodThumbnail from './components/ApodThumbnail'
 
 const MainContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  padding-bottom: 10px;
 `
 
 const DescriptionContainer = styled.div`
@@ -30,13 +32,6 @@ const GridContainer = styled(Container)`
   flex-direction: row;
 `
 
-const Image = styled.img`
-  display: flex;
-  height: 300px;
-  width: 405px;
-  border-radius: 0.5rem;
-`
-
 const appStorage = window.localStorage
 
 // TODO: make the url config. This is dev env but once service is deployed we want to call diff endpoint
@@ -53,6 +48,7 @@ class Main extends React.Component {
   componentDidMount() {
     let rawData = appStorage.getItem("apodData");
     let cachedData = JSON.parse(rawData);
+    console.log(cachedData)
     if (!cachedData || cachedData.length === 0) {
       this.getApodData()
     } else {
@@ -82,11 +78,16 @@ class Main extends React.Component {
         <BrowseContainer>
         </BrowseContainer>
         <GridContainer>
-          <GridList cellHeight={300} cols={3}>
-            {this.state.apodData.map((apodTile) => (
+          <GridList spacing={10} cellHeight={300} cols={3}>
+            {this.state.apodData.map((apodTile, index) => (
               <GridListTile key={apodTile.date} cols={1}>
-                <Link to="/apod">
-                  <Image alt={apodTile.title} src={apodTile.url}/>
+                <Link to={{
+                  pathname: "/apod",
+                  state: {
+                    currentIndex: index
+                  }
+                }}>
+                  <ApodThumbnail mediaType={apodTile.media_type} title={apodTile.title} url={apodTile.url}/>
                 </Link>
               </GridListTile>
             ))}

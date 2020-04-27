@@ -39,7 +39,7 @@ class App extends React.Component {
           <Grid item xs={12}>
           </Grid>
           <Grid item xs={12}>
-            <MediaContainer/>
+            <MediaContainer currentIndex={this.props.location.state ? this.props.location.state.currentIndex : 0}/>
           </Grid>
         </Grid>
       </MainContainer>

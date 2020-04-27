@@ -21,12 +21,13 @@ const MediaSection = styled.div`
   height: 800px;
 `
 
-const MediaContainerWrapper = styled(Container)`
+const MediaContainerWrapper = styled.div`
   display: flex;
-  justify-content: center;
   flex-direction: row;
+  align-items: center;
+  justify-content: center;
   margin-top: 50px;
-  margin-bottom: 20px;
+  margin-bottom: 50px;
 `
 
 const ButtonContainer = styled.div`
@@ -48,18 +49,19 @@ const HeaderContainer = styled.div`
 `
 
 const dateFormat = "YYYY-MM-DD"
+
+const appStorage = window.localStorage
+
 // TODO: make the url config. This is dev env but once service is deployed we want to call diff endpoint
 const baseUrl = "http://localhost:8081/api/v1/"
-
-// TODO: Come up with a way to cache the data. As user goes through images, pre-fetch more images to make loading times shorter
-let apodData = []
-let currentIndex = 0
 
 // TODO: Refactor this huge component into smaller chunks. Pass data down as props from parent
 class MediaContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      apodData: [],
+      currentIndex: 0,
       mediaUrl: null,
       mediaDateIsToday: false,
       currentImageDate: moment(),
@@ -70,14 +72,27 @@ class MediaContainer extends React.Component {
   }
 
   componentDidMount() {
-    this.getApodData()
+    let redirectIndex = this.props.currentIndex;
+    this.setState({currentIndex: redirectIndex})
+    let rawData = appStorage.getItem("apodData");
+    let cachedData = JSON.parse(rawData);
+    console.log(cachedData)
+    if (!cachedData || cachedData.length === 0) {
+      this.getApodData()
+    } else {
+      this.setState({apodData: cachedData})
+      let currentApod = cachedData[redirectIndex];
+      this.setApodData(currentApod)
+    }
   }
 
   // TODO: If user is viewing the last image we retrieved, make another call to backend for 30 new photos
   updateImageDate(event, numDaysToAdd) {
     this.setState({currentImageDate: this.state.currentImageDate.add(numDaysToAdd, "days")})
-    currentIndex -= numDaysToAdd
-    let apod = apodData[currentIndex]
+    let apodData = this.state.apodData;
+    let newIndex = this.state.currentIndex - numDaysToAdd;
+    this.setState({currentIndex: newIndex})
+    let apod = apodData[newIndex]
     if (apod) {
       this.setApodData(apod)
     }
@@ -89,11 +104,11 @@ class MediaContainer extends React.Component {
     .then(
       (result) => {
         // Decode from base64 to string, and then parse the object
-        apodData = JSON.parse(atob(result))
+        let apodData = JSON.parse(atob(result))
         apodData = apodData.reverse()
-        console.log(apodData)
-        let latestApod = apodData[currentIndex]
+        let latestApod = apodData[this.state.currentIndex]
         this.setApodData(latestApod)
+        this.setState({"apodData": apodData})
     })
   }
 
@@ -103,6 +118,7 @@ class MediaContainer extends React.Component {
     this.setState({text: apod.explanation})
     this.setState({title: apod.title})
     this.setState({mediaType: apod.media_type})
+    this.setState({currentImageDate: moment(apod.date)})
   }
 
   render() {
@@ -119,9 +135,11 @@ class MediaContainer extends React.Component {
               <ArrowBackIosRoundedIcon fontSize='large'/>
             </IconButton>
           </ButtonContainer>
-          <MediaContainerWrapper maxWidth="lg">
-            <MediaDisplayer mediaType={this.state.mediaType} url={this.state.mediaUrl}></MediaDisplayer>
-          </MediaContainerWrapper>
+            <Container maxWidth="lg">
+              <MediaContainerWrapper>
+                <MediaDisplayer mediaType={this.state.mediaType} url={this.state.mediaUrl}></MediaDisplayer>
+              </MediaContainerWrapper>
+            </Container>
           <ButtonContainer>
             <IconButton disabled={this.state.mediaDateIsToday} onClick={e => this.updateImageDate(e, 1)}>
               <ArrowForwardIosRoundedIcon fontSize='large'/>

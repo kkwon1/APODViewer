@@ -2,13 +2,15 @@ import React from 'react';
 import styled from 'styled-components'
 
 const Image = styled.img`
+  display: flex;
   border-radius: 25px;
-  width: 1000px;
+  height: 750px;
 `
 
 const Video = styled.iframe`
+  display: flex;
   border-radius: 25px;
-  width: 1000px;
+  height: 750px;
 `
 
 class MediaDisplayer extends React.Component {
