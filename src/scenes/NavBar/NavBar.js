@@ -6,6 +6,7 @@ import IconButton from '@material-ui/core/IconButton'
 import MenuIcon from '@material-ui/icons/Menu'
 import AccountCircle from '@material-ui/icons/AccountCircle'
 import LoginSignupContainer from '../Login/LoginSignupContainer'
+import { Link } from 'react-router-dom'
 
 const NavbarContainer = styled.div`
   display: flex;
@@ -18,6 +19,11 @@ const NameContainer = styled.div`
   display: flex;
   font-size: 2.5rem;
   padding: 0.5rem;
+`
+
+const LinkContainer = styled(Link)`
+  color: white;
+  text-decoration: none;
 `
 
 // TODO: Add a drawer component that slides the menu
@@ -35,7 +41,11 @@ class NavBar extends React.Component {
             <IconButton edge="start" color="inherit" aria-label="menu">
               <MenuIcon/>
             </IconButton>
-            <NameContainer fontSize='3rem'>APOD Viewer</NameContainer>
+            <NameContainer fontSize='3rem'>
+              <LinkContainer to="/">
+                APOD Viewer
+              </LinkContainer>
+            </NameContainer>
             <div>Login</div>
             {/* <MainSection>
               <IconButton edge="start" color="inherit" aria-label="menu">
