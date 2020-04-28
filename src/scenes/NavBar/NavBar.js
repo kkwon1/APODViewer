@@ -5,7 +5,6 @@ import Toolbar from '@material-ui/core/Toolbar'
 import IconButton from '@material-ui/core/IconButton'
 import MenuIcon from '@material-ui/icons/Menu'
 import AccountCircle from '@material-ui/icons/AccountCircle'
-import LoginSignupContainer from '../Login/LoginSignupContainer'
 import { Link } from 'react-router-dom'
 
 const NavbarContainer = styled.div`
@@ -26,11 +25,25 @@ const LinkContainer = styled(Link)`
   text-decoration: none;
 `
 
+const appStorage = window.localStorage
+
 // TODO: Add a drawer component that slides the menu
 // TODO: Fix the login/signup container. In fact, only show login. If user clicks it, they can see sign up after.
 class NavBar extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      loggedIn: false
+    }
+  }
+
   componentDidMount() {
-    console.log(this.props)
+    let user = appStorage.getItem("user")
+    if (user) {
+      this.setState({loggedIn: true})
+    } else {
+      this.setState({loggedIn: false})
+    }
   }
 
   render() {
@@ -46,18 +59,7 @@ class NavBar extends React.Component {
                 APOD Viewer
               </LinkContainer>
             </NameContainer>
-            <div>Login</div>
-            {/* <MainSection>
-              <IconButton edge="start" color="inherit" aria-label="menu">
-                  <MenuIcon/>
-                </IconButton>
-                <NameContainer variant="h5" color="inherit">
-                  APOD Viewer
-                </NameContainer>
-            </MainSection>
-            <ProfileContainer>
-              { ProfileSection(this.props) }
-            </ProfileContainer> */}
+            { ProfileSection(this.state) }
           </NavbarContainer>
           </Toolbar>
       </AppBar>
@@ -66,8 +68,8 @@ class NavBar extends React.Component {
 }
 
 // TODO: Write some tests you rascal
-function ProfileSection(props) {
-  if (props.isLoggedIn) {
+function ProfileSection(state) {
+  if (state.loggedIn) {
     return (
         <IconButton edge="start" color="inherit" aria-label="menu">
           <AccountCircle/>
@@ -75,7 +77,9 @@ function ProfileSection(props) {
     )
   } else {
     return(
-      <LoginSignupContainer/>
+      <LinkContainer to="/login">
+        Login
+      </LinkContainer>
     )
   }
 }
