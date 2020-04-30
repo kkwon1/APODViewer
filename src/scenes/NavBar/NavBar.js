@@ -6,6 +6,7 @@ import IconButton from '@material-ui/core/IconButton'
 import MenuIcon from '@material-ui/icons/Menu'
 import AccountCircle from '@material-ui/icons/AccountCircle'
 import { Link } from 'react-router-dom'
+import firebase from '../../Utils/Firebase'
 
 const NavbarContainer = styled.div`
   display: flex;
@@ -59,7 +60,7 @@ class NavBar extends React.Component {
                 APOD Viewer
               </LinkContainer>
             </NameContainer>
-            { ProfileSection(this.state) }
+            { ProfileSection(this) }
           </NavbarContainer>
           </Toolbar>
       </AppBar>
@@ -67,17 +68,28 @@ class NavBar extends React.Component {
   }
 }
 
+function logout(component) {
+  firebase.auth().signOut().then(function() {
+    component.setState({loggedIn: false})
+    appStorage.removeItem("user")
+  }).catch(function(error) {
+    console.log(error)
+  })
+}
+
 // TODO: Write some tests you rascal
-function ProfileSection(state) {
-  if (state.loggedIn) {
+function ProfileSection(component) {
+  if (component.state.loggedIn) {
     return (
         <IconButton edge="start" color="inherit" aria-label="menu">
-          <AccountCircle/>
+          <AccountCircle onClick={() => logout(component)}/>
         </IconButton>
     )
   } else {
     return(
-      <LinkContainer to="/login">
+      <LinkContainer to={{
+          pathname: "/login"
+      }}>
         Login
       </LinkContainer>
     )
