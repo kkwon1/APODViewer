@@ -49,11 +49,7 @@ const HeaderContainer = styled.div`
 `
 
 const dateFormat = "YYYY-MM-DD"
-
 const appStorage = window.localStorage
-
-// TODO: make the url config. This is dev env but once service is deployed we want to call diff endpoint
-const baseUrl = "http://localhost:8081/api/v1/"
 
 // TODO: Refactor this huge component into smaller chunks. Pass data down as props from parent
 class MediaContainer extends React.Component {
@@ -72,18 +68,18 @@ class MediaContainer extends React.Component {
   }
 
   componentDidMount() {
+    // Index of image clicked by user in main view
     let redirectIndex = this.props.currentIndex;
     this.setState({currentIndex: redirectIndex})
+
+    // Get data from cache
     let rawData = appStorage.getItem("apodData");
     let cachedData = JSON.parse(rawData);
-    console.log(cachedData)
-    if (!cachedData || cachedData.length === 0) {
-      this.getApodData()
-    } else {
-      this.setState({apodData: cachedData})
-      let currentApod = cachedData[redirectIndex];
-      this.setApodData(currentApod)
-    }
+
+    // Set state
+    this.setState({apodData: cachedData})
+    let currentApod = cachedData[redirectIndex];
+    this.setApodData(currentApod)
   }
 
   // TODO: If user is viewing the last image we retrieved, make another call to backend for 30 new photos
@@ -96,20 +92,6 @@ class MediaContainer extends React.Component {
     if (apod) {
       this.setApodData(apod)
     }
-  }
-
-  getApodData() {
-    fetch(`${baseUrl}apod/batch/?count=30`)
-    .then(res => res.json())
-    .then(
-      (result) => {
-        // Decode from base64 to string, and then parse the object
-        let apodData = JSON.parse(atob(result))
-        apodData = apodData.reverse()
-        let latestApod = apodData[this.state.currentIndex]
-        this.setApodData(latestApod)
-        this.setState({"apodData": apodData})
-    })
   }
 
   setApodData(apod) {
