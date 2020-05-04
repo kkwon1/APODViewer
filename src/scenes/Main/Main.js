@@ -6,6 +6,7 @@ import GridListTile from '@material-ui/core/GridListTile'
 import Container from '@material-ui/core/Container'
 import ApodThumbnail from './components/ApodThumbnail'
 import ApodDataFetcher from '../../hooks/ApodDataFetcher'
+import CircularProgress from '@material-ui/core/CircularProgress'
 
 const MainContainer = styled.div`
   display: flex;
@@ -30,7 +31,13 @@ const BrowseContainer = styled.div`
 
 const GridContainer = styled(Container)`
   display: flex;
+  text-align: center;
+  justify-content: center;
   flex-direction: row;
+`
+
+const LoadingContainer = styled(CircularProgress)`
+  padding: 5rem;
 `
 
 // TODO: make the url config. This is dev env but once service is deployed we want to call diff endpoint
@@ -47,7 +54,8 @@ function Main() {
       <BrowseContainer>
       </BrowseContainer>
       <GridContainer>
-        {apodState.isFetching ? <div>Loading...</div> :
+        {apodState.isFetching ?
+          <LoadingContainer /> :
           <GridList spacing={10} cellHeight={300} cols={3}>
           {apodState.apodData.map((apodTile, index) => (
             <GridListTile key={apodTile.date} cols={1}>
