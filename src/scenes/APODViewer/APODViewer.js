@@ -1,9 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
-import MediaContainer from './scenes/APODViewer/components/MediaContainer'
+import MediaContainer from './components/MediaContainer'
 import Grid from '@material-ui/core/Grid'
-import dotenv from 'dotenv'
-dotenv.config()
 
 const MainContainer = styled.div`
   display: flex;

@@ -1,8 +1,13 @@
 import React from 'react'
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth'
-import firebase from '../../Utils/Firebase'
+import styled from 'styled-components'
+import firebase from '../../utils/Firebase'
 
 const appStorage = window.localStorage
+
+const FirebaseLogin = styled(StyledFirebaseAuth)`
+  padding: 3rem;
+`
 
 // This is our firebaseui configuration object
 const uiConfig = ({
@@ -30,7 +35,7 @@ const uiConfig = ({
 class Login extends React.Component {
   render() {
     return(
-      <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()}/>
+      <FirebaseLogin uiConfig={uiConfig} firebaseAuth={firebase.auth()}/>
     )
   }
 }
