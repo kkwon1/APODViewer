@@ -50,6 +50,7 @@ const HeaderContainer = styled.div`
 
 const MoreButton = styled.span`
   color: grey;
+  cursor: pointer;
 `;
 
 const dateFormat = "YYYY-MM-DD";
