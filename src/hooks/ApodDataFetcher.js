@@ -51,7 +51,7 @@ function ApodDataFetcher(url) {
 function dataIsStale(latestApod) {
   let now = moment().format(dateFormat)
 
-  return latestApod.date > now
+  return now > latestApod.date
 }
 
 export default ApodDataFetcher;

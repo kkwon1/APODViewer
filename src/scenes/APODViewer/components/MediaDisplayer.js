@@ -1,16 +1,18 @@
 import React from 'react';
 import styled from 'styled-components'
 
+const mediaHeight = "500px"
+
 const Image = styled.img`
   display: flex;
   border-radius: 25px;
-  height: 750px;
+  height: ${mediaHeight};
 `
 
 const Video = styled.iframe`
   display: flex;
   border-radius: 25px;
-  height: 750px;
+  height: ${mediaHeight};
 `
 
 class MediaDisplayer extends React.Component {

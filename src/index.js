@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import ReactDOM from 'react-dom'
 import './index.css'
 import APODViewer from './scenes/APODViewer/APODViewer'
@@ -7,17 +7,21 @@ import * as serviceWorker from './serviceWorker'
 import { Route, BrowserRouter as Router } from 'react-router-dom'
 import NavBar from './scenes/NavBar/NavBar'
 import Login from './scenes/Login/Login'
+import ScrollToTop from './utils/ScrollToTop'
 import dotenv from 'dotenv'
 dotenv.config()
 
 const routing = (
   <Router>
-    <div>
-      <NavBar/>
-      <Route exact path="/" component={Main}/>
-      <Route exact path="/apod" component={APODViewer}/>
-      <Route exact path="/login" component={Login}/>
-    </div>
+    <Fragment>
+      <ScrollToTop/>
+      <div>
+        <NavBar/>
+        <Route exact path="/" component={Main}/>
+        <Route exact path="/apod" component={APODViewer}/>
+        <Route exact path="/login" component={Login}/>
+      </div>
+    </Fragment>
   </Router>
 )
 

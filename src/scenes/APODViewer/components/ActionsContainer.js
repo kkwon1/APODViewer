@@ -12,19 +12,17 @@ const Actions = styled.div`
   margin-bottom: 50px;
 `
 
-class ActionsContainer extends React.Component {
-  render() {
-    return(
-      <Actions>
-        <IconButton disableRipple={true} disableFocusRipple={true}>
-          <FavoriteBorderIcon onClick={() => likeButtonPressed()} fontSize='large'/>
-        </IconButton>
-        <IconButton disableRipple={true} disableFocusRipple={true}>
-          <StarBorderIcon fontSize='large'/>
-        </IconButton>
-      </Actions>
-    )
-  }
+function ActionsContainer() {
+  return(
+    <Actions>
+      <IconButton disableRipple={true} disableFocusRipple={true}>
+        <FavoriteBorderIcon onClick={() => likeButtonPressed()} fontSize='large'/>
+      </IconButton>
+      <IconButton disableRipple={true} disableFocusRipple={true}>
+        <StarBorderIcon fontSize='large'/>
+      </IconButton>
+    </Actions>
+  )
 }
 
 function likeButtonPressed() {
