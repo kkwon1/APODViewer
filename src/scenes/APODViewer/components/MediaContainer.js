@@ -143,7 +143,7 @@ class MediaContainer extends React.Component {
             </IconButton>
           </ButtonContainer>
         </MediaSection>
-        <ActionsContainer />
+        <ActionsContainer currentApod={this.state} />
         {this.state.expandDetails ? (
           <TextContainer>
             <Typography variant="h5">{this.state.text}</Typography>
