@@ -1,7 +1,7 @@
-import * as firebase from "firebase/app"
-import "firebase/auth"
+import * as firebase from "./node_modules/firebase/app";
+import "./node_modules/firebase/auth";
 
-const firebaseApiKey = process.env.REACT_APP_FIREBASE_API_KEY
+const firebaseApiKey = process.env.REACT_APP_FIREBASE_API_KEY;
 
 const firebaseConfig = {
   apiKey: firebaseApiKey,
@@ -11,9 +11,9 @@ const firebaseConfig = {
   storageBucket: "apodviewer-2e111.appspot.com",
   messagingSenderId: "888665527053",
   appId: "1:888665527053:web:508fdc7fbf64f530801644",
-  measurementId: "G-11EPTCFFN1"
+  measurementId: "G-11EPTCFFN1",
 };
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 
-export default firebase
+export default firebase;
