@@ -1,17 +1,21 @@
 import * as firebase from "../../node_modules/firebase/app";
 import "../../node_modules/firebase/auth";
 
-const firebaseApiKey = process.env.REACT_APP_FIREBASE_API_KEY;
+const firebaseApiKey = process.env.FIREBASE_API_KEY;
+const firebaseName = process.env.FIREBASE_NAME;
+const firebaseMsgId = process.env.FIREBASE_MESSAGING_SENDER_ID;
+const firebaseAppId = process.env.FIREBASE_APP_ID;
+const firebaseMeasurementId = process.env.FIREBASE_MEASUREMENT_ID;
 
 const firebaseConfig = {
   apiKey: firebaseApiKey,
-  authDomain: "apodviewer-2e111.firebaseapp.com",
-  databaseURL: "https://apodviewer-2e111.firebaseio.com",
-  projectId: "apodviewer-2e111",
-  storageBucket: "apodviewer-2e111.appspot.com",
-  messagingSenderId: "888665527053",
-  appId: "1:888665527053:web:508fdc7fbf64f530801644",
-  measurementId: "G-11EPTCFFN1",
+  authDomain: `${firebaseName}.firebaseapp.com`,
+  databaseURL: `https://${firebaseName}.firebaseio.com`,
+  projectId: firebaseName,
+  storageBucket: `${firebaseName}.appspot.com`,
+  messagingSenderId: firebaseMsgId,
+  appId: firebaseAppId,
+  measurementId: firebaseMeasurementId,
 };
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
