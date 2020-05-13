@@ -1,11 +1,13 @@
 import * as firebase from "../../node_modules/firebase/app";
 import "../../node_modules/firebase/auth";
 
-const firebaseApiKey = process.env.FIREBASE_API_KEY;
-const firebaseName = process.env.FIREBASE_NAME;
-const firebaseMsgId = process.env.FIREBASE_MESSAGING_SENDER_ID;
-const firebaseAppId = process.env.FIREBASE_APP_ID;
-const firebaseMeasurementId = process.env.FIREBASE_MEASUREMENT_ID;
+const firebaseApiKey = process.env.REACT_APP_FIREBASE_API_KEY;
+const firebaseName = process.env.REACT_APP_FIREBASE_NAME;
+const firebaseMsgId = process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID;
+const firebaseAppId = process.env.REACT_APP_FIREBASE_APP_ID;
+const firebaseMeasurementId = process.env.REACT_APP_FIREBASE_MEASUREMENT_ID;
+
+console.log(process.env);
 
 const firebaseConfig = {
   apiKey: firebaseApiKey,
