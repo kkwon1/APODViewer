@@ -1,3 +1,2 @@
 export const DATE_FORMAT = "YYYY-MM-DD";
-//TODO: Configure base url depending on environment
-export const BASE_URL = "http://localhost:8081/api/v1/";
+export const BASE_URL = process.env.REACT_APP_BACKEND_URL;
