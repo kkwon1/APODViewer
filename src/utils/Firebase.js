@@ -1,5 +1,5 @@
-import * as firebase from "./node_modules/firebase/app";
-import "./node_modules/firebase/auth";
+import * as firebase from "../../node_modules/firebase/app";
+import "../../node_modules/firebase/auth";
 
 const firebaseApiKey = process.env.REACT_APP_FIREBASE_API_KEY;
 
