@@ -83,8 +83,13 @@ function logout(component) {
 function ProfileSection(component) {
   if (component.state.loggedIn) {
     return (
-      <IconButton edge="start" color="inherit" aria-label="menu">
-        <AccountCircle onClick={() => logout(component)} />
+      <IconButton
+        onClick={() => logout(component)}
+        edge="start"
+        color="inherit"
+        aria-label="menu"
+      >
+        <AccountCircle />
       </IconButton>
     );
   } else {

@@ -9,6 +9,7 @@ import Typography from "@material-ui/core/Typography";
 import ActionsContainer from "./ActionsContainer";
 import MediaDisplayer from "./MediaDisplayer";
 import ApodUtils from "../utils/ApodUtils";
+import { DATE_FORMAT } from "../../../Constants";
 
 const MainContainer = styled(Container)`
   display: flex;
@@ -53,7 +54,6 @@ const MoreButton = styled.span`
   cursor: pointer;
 `;
 
-const dateFormat = "YYYY-MM-DD";
 const appStorage = window.localStorage;
 
 const apodUtils = new ApodUtils();
@@ -72,6 +72,8 @@ class MediaContainer extends React.Component {
       title: "",
       mediaType: "",
       expandDetails: false,
+      saves: [],
+      likes: [],
     };
   }
 
@@ -166,7 +168,7 @@ class MediaContainer extends React.Component {
 }
 
 function dateIsToday(apodDate) {
-  let now = moment().format(dateFormat);
+  let now = moment().format(DATE_FORMAT);
 
   // apodDate is today or future date
   return now <= apodDate;
