@@ -81,9 +81,11 @@ const ActionsContainer = (props) => {
     setSave(newStateIsSave);
     if (newStateIsSave) {
       userAction("save");
+      saveDates.push(apodDate);
     } else {
       userAction("unsave");
       let index = saveDates.indexOf(apodDate);
+      saveDates = removeItem(saveDates, apodDate);
       if (index > -1) {
         saveDates.splice(index, 1);
       }
@@ -94,6 +96,7 @@ const ActionsContainer = (props) => {
   useEffect(() => {
     setLikeDates(props.currentApod.likeDates);
     setSaveDates(props.currentApod.saveDates);
+
     setLike(isLiked(likeDates, currentApodDate));
     setSave(isSaved(saveDates, currentApodDate));
   }, [
