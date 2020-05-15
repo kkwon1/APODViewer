@@ -44,7 +44,7 @@ class ApodThumbnail extends React.Component {
         return (
           <Image
             alt={this.props.title}
-            style={{ "background-image": `url(${this.props.url})` }}
+            style={{ backgroundImage: `url(${this.props.url})` }}
           />
         );
     }

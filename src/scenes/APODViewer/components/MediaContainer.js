@@ -72,48 +72,55 @@ class MediaContainer extends React.Component {
       title: "",
       mediaType: "",
       expandDetails: false,
-      saves: [],
-      likes: [],
+      saveDates: [],
+      likeDates: [],
     };
   }
 
   componentDidMount() {
     // Index of image clicked by user in main view
     let redirectIndex = this.props.currentIndex;
-    this.setState({ currentIndex: redirectIndex });
 
     // Get data from cache
-    let rawData = appStorage.getItem("apodData");
-    let cachedData = JSON.parse(rawData);
-
-    // Set state
-    this.setState({ apodData: cachedData });
+    let rawApodData = appStorage.getItem("apodData");
+    let cachedData = JSON.parse(rawApodData);
     let currentApod = cachedData[redirectIndex];
-    this.setApodData(currentApod);
+
+    let rawUserData = appStorage.getItem("userData");
+    let parsedUserData = JSON.parse(rawUserData);
+
+    this.setState({
+      currentIndex: redirectIndex,
+      apodData: cachedData,
+      mediaUrl: currentApod.url,
+      mediaDateIsToday: dateIsToday(currentApod.date),
+      text: currentApod.explanation,
+      title: currentApod.title,
+      mediaType: currentApod.media_type,
+      currentImageDate: moment(currentApod.date),
+      expandDetails: false,
+      saveDates: getSaveDates(parsedUserData),
+      likeDates: getLikeDates(parsedUserData),
+    });
   }
 
   // TODO: If user is viewing the last image we retrieved, make another call to backend for 30 new photos
   updateImageDate(event, numDaysToAdd) {
-    this.setState({
-      currentImageDate: this.state.currentImageDate.add(numDaysToAdd, "days"),
-    });
     let apodData = this.state.apodData;
     let newIndex = this.state.currentIndex - numDaysToAdd;
-    this.setState({ currentIndex: newIndex });
     let apod = apodData[newIndex];
     if (apod) {
-      this.setApodData(apod);
+      this.setState({
+        currentIndex: newIndex,
+        mediaUrl: apod.url,
+        mediaDateIsToday: dateIsToday(apod.date),
+        text: apod.explanation,
+        title: apod.title,
+        mediaType: apod.media_type,
+        currentImageDate: moment(apod.date),
+        expandDetails: false,
+      });
     }
-  }
-
-  setApodData(apod) {
-    this.setState({ mediaUrl: apod.url });
-    this.setState({ mediaDateIsToday: dateIsToday(apod.date) });
-    this.setState({ text: apod.explanation });
-    this.setState({ title: apod.title });
-    this.setState({ mediaType: apod.media_type });
-    this.setState({ currentImageDate: moment(apod.date) });
-    this.setState({ expandDetails: false });
   }
 
   render() {
@@ -124,7 +131,10 @@ class MediaContainer extends React.Component {
         </HeaderContainer>
         <MediaSection>
           <ButtonContainer>
-            <IconButton onClick={(e) => this.updateImageDate(e, -1)}>
+            <IconButton
+              disabled={this.state.mediaDateIsToday}
+              onClick={(e) => this.updateImageDate(e, 1)}
+            >
               <ArrowBackIosRoundedIcon fontSize="large" />
             </IconButton>
           </ButtonContainer>
@@ -137,10 +147,7 @@ class MediaContainer extends React.Component {
             </MediaContainerWrapper>
           </Container>
           <ButtonContainer>
-            <IconButton
-              disabled={this.state.mediaDateIsToday}
-              onClick={(e) => this.updateImageDate(e, 1)}
-            >
+            <IconButton onClick={(e) => this.updateImageDate(e, -1)}>
               <ArrowForwardIosRoundedIcon fontSize="large" />
             </IconButton>
           </ButtonContainer>
@@ -172,6 +179,18 @@ function dateIsToday(apodDate) {
 
   // apodDate is today or future date
   return now <= apodDate;
+}
+
+function getLikeDates(parsedUserData) {
+  return parsedUserData && parsedUserData.UserLikes
+    ? parsedUserData.UserLikes.map((s) => s.ApodDate)
+    : [];
+}
+
+function getSaveDates(parsedUserData) {
+  return parsedUserData && parsedUserData.UserSaves
+    ? parsedUserData.UserSaves.map((s) => s.ApodDate)
+    : [];
 }
 
 export default MediaContainer;
