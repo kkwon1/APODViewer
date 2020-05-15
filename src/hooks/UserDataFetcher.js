@@ -39,6 +39,9 @@ function UserDataFetcher(url) {
 
             postData(url, payload, bearer)
               .then((res) => {
+                if (!res.UserSaves) res.UserSaves = [];
+                if (!res.UserLikes) res.UserSaves = [];
+
                 setUserDataState({
                   ...userDataState,
                   userDataState: res,

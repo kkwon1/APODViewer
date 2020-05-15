@@ -23,8 +23,8 @@ const ActionsContainer = (props) => {
     DATE_FORMAT
   );
 
-  const [likes, setLikes] = useState([]);
-  const [saves, setSaves] = useState([]);
+  const [likeDates, setLikeDates] = useState([]);
+  const [saveDates, setSaveDates] = useState([]);
 
   const [like, setLike] = useState(false);
   const [save, setSave] = useState(false);
@@ -46,10 +46,10 @@ const ActionsContainer = (props) => {
     if (rawUser) {
       switch (actionType) {
         case "like":
-          handleLike(likes, currentApodDate);
+          handleLike(likeDates, currentApodDate);
           break;
         case "save":
-          handleSave(saves, currentApodDate);
+          handleSave(saveDates, currentApodDate);
           break;
         default:
           // TODO: Do some error handling
@@ -68,14 +68,12 @@ const ActionsContainer = (props) => {
     if (newStateIsLike) {
       userAction("like");
       likeDates.push(apodDate);
+      // append and save to local storage
     } else {
       userAction("unlike");
-      let index = likeDates.indexOf(apodDate);
-      if (index > -1) {
-        likeDates.splice(index, 1);
-      }
+      likeDates = removeItem(likeDates, apodDate);
     }
-    setLikes(likeDates);
+    setLikeDates(likeDates);
   }
 
   function handleSave(saveDates, apodDate) {
@@ -90,20 +88,20 @@ const ActionsContainer = (props) => {
         saveDates.splice(index, 1);
       }
     }
-    setSaves(saveDates);
+    setSaveDates(saveDates);
   }
 
   useEffect(() => {
-    setLikes(props.currentApod.likeDates);
-    setSaves(props.currentApod.saveDates);
-    setLike(isLiked(likes, currentApodDate));
-    setSave(isSaved(saves, currentApodDate));
+    setLikeDates(props.currentApod.likeDates);
+    setSaveDates(props.currentApod.saveDates);
+    setLike(isLiked(likeDates, currentApodDate));
+    setSave(isSaved(saveDates, currentApodDate));
   }, [
-    likes,
     currentApodDate,
-    saves,
+    likeDates,
     props.currentApod.likeDates,
     props.currentApod.saveDates,
+    saveDates,
   ]);
 
   return (
@@ -146,6 +144,14 @@ function isSaved(saveDates, currentDate) {
     return saveDates.includes(currentDate);
   }
   return false;
+}
+
+function removeItem(array, key) {
+  let index = array.indexOf(key);
+  if (index > -1) {
+    array.splice(index, 1);
+  }
+  return array;
 }
 
 export default ActionsContainer;
