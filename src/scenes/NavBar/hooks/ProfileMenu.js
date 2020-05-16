@@ -90,7 +90,7 @@ export default function ProfileMenu() {
 
   return (
     <div>
-      {loggedIn ? (
+      {loggedIn && window.location.pathname === "/" ? (
         <div>
           <IconButton
             edge="start"

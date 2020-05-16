@@ -3,8 +3,6 @@ import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
 import styled from "styled-components";
 import firebase from "../../utils/Firebase";
 
-const appStorage = window.localStorage;
-
 const FirebaseLogin = styled(StyledFirebaseAuth)`
   padding: 3rem;
 `;
@@ -25,7 +23,6 @@ const uiConfig = {
       // User successfully signed in.
       // Return type determines whether we continue the redirect automatically
       // or whether we leave that to developer to handle.
-      appStorage.setItem("user", JSON.stringify(authResult));
       window.location = process.env.REACT_APP_MAIN_PAGE_URL;
     },
   },
