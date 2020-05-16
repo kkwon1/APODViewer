@@ -61,7 +61,7 @@ const UserAction = ({ url, payload }) => {
     [actionState, payload, url]
   );
 
-  return [actionState, userAction];
+  return [userAction];
 };
 
 export default UserAction;

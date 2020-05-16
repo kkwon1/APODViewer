@@ -8,6 +8,8 @@ import BookmarkIcon from "@material-ui/icons/Bookmark";
 import UserAction from "../../../hooks/UserAction";
 import moment from "moment";
 import { BASE_URL, DATE_FORMAT } from "../../../Constants";
+import * as firebase from "firebase/app";
+import "firebase/auth";
 
 const Actions = styled.div`
   display: flex;
@@ -17,7 +19,6 @@ const Actions = styled.div`
   margin-bottom: 50px;
 `;
 
-const appStorage = window.localStorage;
 const ActionsContainer = (props) => {
   const currentApodDate = props.currentApod.currentImageDate.format(
     DATE_FORMAT
@@ -28,7 +29,7 @@ const ActionsContainer = (props) => {
 
   const [like, setLike] = useState(false);
   const [save, setSave] = useState(false);
-  const [actionState, userAction] = UserAction({
+  const [userAction] = UserAction({
     url: `${BASE_URL}users/action/`,
     payload: {
       ApodURL: props.currentApod.mediaUrl,
@@ -41,25 +42,26 @@ const ActionsContainer = (props) => {
   });
 
   function actionButtonPressed(actionType) {
-    let rawUser = appStorage.getItem("user");
-    console.log(actionState);
-    if (rawUser) {
-      switch (actionType) {
-        case "like":
-          handleLike(likeDates, currentApodDate);
-          break;
-        case "save":
-          handleSave(saveDates, currentApodDate);
-          break;
-        default:
-          // TODO: Do some error handling
-          console.log("Invalid action type");
-          break;
+    firebase.auth().onAuthStateChanged(function (user) {
+      if (user) {
+        switch (actionType) {
+          case "like":
+            handleLike(likeDates, currentApodDate);
+            break;
+          case "save":
+            handleSave(saveDates, currentApodDate);
+            break;
+          default:
+            // TODO: Do some error handling
+            console.log("Invalid action type");
+            break;
+        }
+      } else {
+        // Prompt user to login
+        // TODO: Make a dialog component
+        window.alert("You must be logged in to save an image!");
       }
-    } else {
-      // Prompt user to login
-      window.alert("You must be logged in to save an image!");
-    }
+    });
   }
 
   function handleLike(likeDates, apodDate) {
