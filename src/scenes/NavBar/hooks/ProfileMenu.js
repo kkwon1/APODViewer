@@ -72,6 +72,9 @@ export default function ProfileMenu() {
       .then(function () {
         setLoggedIn(false);
         appStorage.removeItem("userData");
+        if (window.location.pathname !== "/") {
+          window.location = process.env.REACT_APP_MAIN_PAGE_URL;
+        }
       })
       .catch(function (error) {
         console.log(error);
@@ -90,7 +93,7 @@ export default function ProfileMenu() {
 
   return (
     <div>
-      {loggedIn && window.location.pathname === "/" ? (
+      {loggedIn && window.location.pathname !== "/login" ? (
         <div>
           <IconButton
             edge="start"
