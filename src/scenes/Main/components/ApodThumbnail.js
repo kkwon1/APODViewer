@@ -2,11 +2,13 @@ import React from "react";
 import styled from "styled-components";
 import PlayCircleFilledIcon from "@material-ui/icons/PlayCircleFilled";
 
-const Image = styled.img`
+const Image = styled.div`
   display: flex;
   height: 300px;
   width: 405px;
+  background-size: cover;
   border-radius: 0.5rem;
+  background-position: center;
 `;
 
 const PlaceHolder = styled.div`
@@ -39,7 +41,12 @@ class ApodThumbnail extends React.Component {
         );
       // Capture image case
       default:
-        return <Image alt={this.props.title} src={this.props.url} />;
+        return (
+          <Image
+            alt={this.props.title}
+            style={{ backgroundImage: `url(${this.props.url})` }}
+          />
+        );
     }
   }
 }

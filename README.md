@@ -1,8 +1,6 @@
 # APOD Viewer
 
-[APOD Viewer](https://apodviewer.herokuapp.com/) is my passion project that I've wanted to build for a long time.
-
-It's a React app that provides a friendly UI/UX for users to view NASA's Astronomy Picture Of the Day (APOD). You can find the official site [here](https://apod.nasa.gov/apod/astropix.html).
+[APOD Viewer](https://apodviewer.herokuapp.com/) is a React app that provides a friendly UI/UX for users to view NASA's Astronomy Picture Of the Day (APOD). You can find the official site [here](https://apod.nasa.gov/apod/astropix.html).
 
 It interacts with the backend service [APODViewerService](https://github.com/kkwon1/APODViewerService) to retrieve data, and save user specific info.
 

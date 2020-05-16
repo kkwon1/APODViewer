@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import IconButton from "@material-ui/core/IconButton";
 import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
@@ -18,8 +18,14 @@ const Actions = styled.div`
 `;
 
 const appStorage = window.localStorage;
-
 const ActionsContainer = (props) => {
+  const currentApodDate = props.currentApod.currentImageDate.format(
+    DATE_FORMAT
+  );
+
+  const [likeDates, setLikeDates] = useState([]);
+  const [saveDates, setSaveDates] = useState([]);
+
   const [like, setLike] = useState(false);
   const [save, setSave] = useState(false);
   const [actionState, userAction] = UserAction({
@@ -27,7 +33,7 @@ const ActionsContainer = (props) => {
     payload: {
       ApodURL: props.currentApod.mediaUrl,
       ApodName: props.currentApod.title,
-      ApodDate: props.currentApod.currentImageDate.format(DATE_FORMAT),
+      ApodDate: currentApodDate,
       MediaType: props.currentApod.mediaType,
       Description: props.currentApod.text,
       ActionDate: moment(),
@@ -37,14 +43,13 @@ const ActionsContainer = (props) => {
   function actionButtonPressed(actionType) {
     let rawUser = appStorage.getItem("user");
     console.log(actionState);
-    let parsedUser = JSON.parse(rawUser);
     if (rawUser) {
       switch (actionType) {
-        case "save":
-          handleSave(save, setSave, userAction, parsedUser);
-          break;
         case "like":
-          handleLike(like, setLike, userAction, parsedUser);
+          handleLike(likeDates, currentApodDate);
+          break;
+        case "save":
+          handleSave(saveDates, currentApodDate);
           break;
         default:
           // TODO: Do some error handling
@@ -56,6 +61,51 @@ const ActionsContainer = (props) => {
       window.alert("You must be logged in to save an image!");
     }
   }
+
+  function handleLike(likeDates, apodDate) {
+    let newStateIsLike = !like;
+    setLike(newStateIsLike);
+    if (newStateIsLike) {
+      userAction("like");
+      likeDates.push(apodDate);
+      // append and save to local storage
+    } else {
+      userAction("unlike");
+      likeDates = removeItem(likeDates, apodDate);
+    }
+    setLikeDates(likeDates);
+  }
+
+  function handleSave(saveDates, apodDate) {
+    let newStateIsSave = !save;
+    setSave(newStateIsSave);
+    if (newStateIsSave) {
+      userAction("save");
+      saveDates.push(apodDate);
+    } else {
+      userAction("unsave");
+      let index = saveDates.indexOf(apodDate);
+      saveDates = removeItem(saveDates, apodDate);
+      if (index > -1) {
+        saveDates.splice(index, 1);
+      }
+    }
+    setSaveDates(saveDates);
+  }
+
+  useEffect(() => {
+    setLikeDates(props.currentApod.likeDates);
+    setSaveDates(props.currentApod.saveDates);
+
+    setLike(isLiked(likeDates, currentApodDate));
+    setSave(isSaved(saveDates, currentApodDate));
+  }, [
+    currentApodDate,
+    likeDates,
+    props.currentApod.likeDates,
+    props.currentApod.saveDates,
+    saveDates,
+  ]);
 
   return (
     <Actions>
@@ -85,24 +135,26 @@ const ActionsContainer = (props) => {
   );
 };
 
-function handleSave(save, setSave, userAction, parsedUser) {
-  let newStateIsSave = !save;
-  setSave(newStateIsSave);
-  if (newStateIsSave) {
-    userAction("save");
-  } else {
-    userAction("unsave");
+function isLiked(likeDates, currentDate) {
+  if (likeDates) {
+    return likeDates.includes(currentDate);
   }
+  return false;
 }
 
-function handleLike(like, setLike, userAction, parsedUser) {
-  let newStateIsLike = !like;
-  setLike(newStateIsLike);
-  if (newStateIsLike) {
-    userAction("like");
-  } else {
-    userAction("unlike");
+function isSaved(saveDates, currentDate) {
+  if (saveDates) {
+    return saveDates.includes(currentDate);
   }
+  return false;
+}
+
+function removeItem(array, key) {
+  let index = array.indexOf(key);
+  if (index > -1) {
+    array.splice(index, 1);
+  }
+  return array;
 }
 
 export default ActionsContainer;

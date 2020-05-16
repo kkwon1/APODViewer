@@ -1,6 +1,9 @@
 import { useState, useCallback } from "react";
 import * as firebase from "firebase/app";
 import "firebase/auth";
+import ApodUtils from "../scenes/APODViewer/utils/ApodUtils";
+
+const apodUtils = new ApodUtils();
 
 async function postData(url = "", data = {}, bearer) {
   // Default options are marked with *
@@ -35,12 +38,12 @@ const UserAction = ({ url, payload }) => {
 
             postData(url, payload, bearer)
               .then((res) => {
-                let parsedData = JSON.parse(atob(res));
                 setUserAction({
                   ...actionState,
-                  data: parsedData,
+                  data: res,
                   isLoading: false,
                 });
+                apodUtils.updateApodDataLocalStorage(res, payload.Action);
               })
               .catch((err) => {
                 setUserAction({
