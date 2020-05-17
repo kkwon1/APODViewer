@@ -28,35 +28,33 @@ const UserAction = ({ url, payload }) => {
   const userAction = useCallback(
     (action) => {
       setUserAction({ ...actionState, isLoading: true });
+      let user = firebase.auth().currentUser;
+      if (user) {
+        user.getIdToken().then(function (idToken) {
+          let bearer = "Bearer " + idToken;
+          payload.UserID = user.uid;
+          payload.Action = action;
 
-      firebase.auth().onAuthStateChanged(function (user) {
-        if (user) {
-          user.getIdToken().then(function (idToken) {
-            let bearer = "Bearer " + idToken;
-            payload.UserID = user.uid;
-            payload.Action = action;
-
-            postData(url, payload, bearer)
-              .then((res) => {
-                setUserAction({
-                  ...actionState,
-                  data: res,
-                  isLoading: false,
-                });
-                apodUtils.updateApodDataLocalStorage(res, payload.Action);
-              })
-              .catch((err) => {
-                setUserAction({
-                  ...actionState,
-                  error: err,
-                  isLoading: false,
-                });
+          postData(url, payload, bearer)
+            .then((res) => {
+              setUserAction({
+                ...actionState,
+                data: res,
+                isLoading: false,
               });
-          });
-        } else {
-          // TODO: Raise an error
-        }
-      });
+              apodUtils.updateApodDataLocalStorage(res, payload.Action);
+            })
+            .catch((err) => {
+              setUserAction({
+                ...actionState,
+                error: err,
+                isLoading: false,
+              });
+            });
+        });
+      } else {
+        // TODO: Raise an error
+      }
     },
     [actionState, payload, url]
   );

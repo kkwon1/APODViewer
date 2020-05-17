@@ -42,26 +42,24 @@ const ActionsContainer = (props) => {
   });
 
   function actionButtonPressed(actionType) {
-    firebase.auth().onAuthStateChanged(function (user) {
-      if (user) {
-        switch (actionType) {
-          case "like":
-            handleLike(likeDates, currentApodDate);
-            break;
-          case "save":
-            handleSave(saveDates, currentApodDate);
-            break;
-          default:
-            // TODO: Do some error handling
-            console.log("Invalid action type");
-            break;
-        }
-      } else {
-        // Prompt user to login
-        // TODO: Make a dialog component
-        window.alert("You must be logged in to save an image!");
+    if (firebase.auth().currentUser) {
+      switch (actionType) {
+        case "like":
+          handleLike(likeDates, currentApodDate);
+          break;
+        case "save":
+          handleSave(saveDates, currentApodDate);
+          break;
+        default:
+          // TODO: Do some error handling
+          console.log("Invalid action type");
+          break;
       }
-    });
+    } else {
+      // Prompt user to login
+      // TODO: Make a dialog component
+      window.alert("You must be logged in to save an image!");
+    }
   }
 
   function handleLike(likeDates, apodDate) {
