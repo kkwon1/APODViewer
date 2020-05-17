@@ -10,6 +10,7 @@ import ActionsContainer from "./ActionsContainer";
 import MediaDisplayer from "./MediaDisplayer";
 import ApodUtils from "../utils/ApodUtils";
 import { DATE_FORMAT } from "../../../Constants";
+import Copyright from "../hooks/Copyright";
 
 const MainContainer = styled(Container)`
   display: flex;
@@ -49,9 +50,15 @@ const HeaderContainer = styled.div`
   margin-top: 50px;
 `;
 
+const ActionCopyrightContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
 const MoreButton = styled.span`
   color: grey;
   cursor: pointer;
+  text-align: center;
 `;
 
 const appStorage = window.localStorage;
@@ -65,12 +72,14 @@ class MediaContainer extends React.Component {
     this.state = {
       apodData: [],
       currentIndex: 0,
-      mediaUrl: null,
+      mediaUrl: "",
+      hdMediaUrl: "",
       mediaDateIsToday: false,
       currentImageDate: moment(),
       text: "",
       title: "",
       mediaType: "",
+      copyright: null,
       expandDetails: false,
       saveDates: [],
       likeDates: [],
@@ -93,11 +102,13 @@ class MediaContainer extends React.Component {
       currentIndex: redirectIndex,
       apodData: cachedData,
       mediaUrl: currentApod.url,
+      hdMediaUrl: currentApod.hdurl,
       mediaDateIsToday: dateIsToday(currentApod.date),
       text: currentApod.explanation,
       title: currentApod.title,
       mediaType: currentApod.media_type,
       currentImageDate: moment(currentApod.date),
+      copyright: currentApod.copyright,
       expandDetails: false,
       saveDates: getSaveDates(parsedUserData),
       likeDates: getLikeDates(parsedUserData),
@@ -113,11 +124,13 @@ class MediaContainer extends React.Component {
       this.setState({
         currentIndex: newIndex,
         mediaUrl: apod.url,
+        hdMediaUrl: apod.hdurl,
         mediaDateIsToday: dateIsToday(apod.date),
         text: apod.explanation,
         title: apod.title,
         mediaType: apod.media_type,
         currentImageDate: moment(apod.date),
+        copyright: apod.copyright,
         expandDetails: false,
       });
     }
@@ -143,6 +156,7 @@ class MediaContainer extends React.Component {
               <MediaDisplayer
                 mediaType={this.state.mediaType}
                 url={this.state.mediaUrl}
+                hdurl={this.state.hdMediaUrl}
               ></MediaDisplayer>
             </MediaContainerWrapper>
           </Container>
@@ -152,7 +166,10 @@ class MediaContainer extends React.Component {
             </IconButton>
           </ButtonContainer>
         </MediaSection>
-        <ActionsContainer currentApod={this.state} />
+        <ActionCopyrightContainer>
+          <ActionsContainer currentApod={this.state} />
+          <Copyright copyright={this.state.copyright} />
+        </ActionCopyrightContainer>
         {this.state.expandDetails ? (
           <TextContainer>
             <Typography variant="h5">{this.state.text}</Typography>
