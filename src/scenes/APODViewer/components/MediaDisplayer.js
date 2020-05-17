@@ -27,7 +27,7 @@ const ModalContainer = styled.div`
 
 const ModalImage = styled.img`
   display: flex;
-  height: 90%;
+  height: 95%;
   width: auto;
   border-radius: 10px;
 `;
