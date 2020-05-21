@@ -14,8 +14,8 @@ import Copyright from "../hooks/Copyright";
 
 const MainContainer = styled(Container)`
   display: flex;
-  justify-content: space-around;
   flex-direction: column;
+  margin-bottom: 100px;
 `;
 
 const MediaSection = styled.div`
@@ -26,8 +26,6 @@ const MediaSection = styled.div`
 
 const MediaContainerWrapper = styled.div`
   display: flex;
-  flex-direction: row;
-  align-items: center;
   justify-content: center;
 `;
 
@@ -38,9 +36,7 @@ const ButtonContainer = styled.div`
 
 const TextContainer = styled.div`
   display: flex;
-  flex-direction: row;
   align-items: center;
-  margin-bottom: 100px;
 `;
 
 const HeaderContainer = styled.div`
