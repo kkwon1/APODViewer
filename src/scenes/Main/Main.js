@@ -62,17 +62,23 @@ const pageReducer = (state, action) => {
   }
 };
 
+const appStorage = window.localStorage;
+
 function Main() {
+  let rawApodData = appStorage.getItem("apodData");
+  let cachedData = JSON.parse(rawApodData);
+  if (!cachedData) cachedData = [];
   const [userDataState] = UserDataFetcher(`${BASE_URL}users/data/`);
-  const [pager, pagerDispatch] = useReducer(pageReducer, { page: 0 });
+  const [pager, pagerDispatch] = useReducer(pageReducer, {
+    page: Math.floor(cachedData.length / 30),
+  });
   const [apodData, apodDispatch] = useReducer(apodReducer, {
-    apods: [],
+    apods: cachedData,
     fetching: true,
   });
 
-  let initialRender = useRef(true);
   let bottomBoundaryRef = useRef(null);
-  useFetch(pager, apodDispatch, initialRender);
+  useFetch(pager, apodDispatch);
   useLazyLoading(".apod-tile", apodData.apods);
   useInfiniteScroll(bottomBoundaryRef, pagerDispatch);
 
@@ -81,7 +87,7 @@ function Main() {
       <DescriptionContainer>
         Browse, save and share your favourite Astronomy Picture of the Day!
       </DescriptionContainer>
-      <BrowseContainer></BrowseContainer>
+      <BrowseContainer />
       <GridContainer>
         <GridList spacing={10} cellHeight={300} cols={3}>
           {apodData.apods.map((apodTile, index) => (

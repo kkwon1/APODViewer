@@ -1,17 +1,27 @@
 import { useEffect, useCallback, useRef } from "react";
 import { BASE_URL } from "../../Constants";
 
+const appStorage = window.localStorage;
 // make API calls and pass the returned data via dispatch
-export const useFetch = (data, dispatch, initialRender, isFetching) => {
+export const useFetch = (data, dispatch) => {
   useEffect(() => {
-    if (!initialRender.current) {
-      dispatch({ type: "FETCHING_IMAGES", fetching: true });
+    let rawApodData = appStorage.getItem("apodData");
+    let cachedData = JSON.parse(rawApodData);
+    if (!cachedData) cachedData = [];
+    dispatch({ type: "FETCHING_IMAGES", fetching: true });
+    if (data.page >= Math.floor(cachedData.length / 30)) {
       fetch(`${BASE_URL}apod/batch/?count=30&page=${data.page}`)
         .then((data) => data.json())
         .then((images) => {
           // Decode from base64 to string, and then parse the object
           let parsedData = JSON.parse(atob(images));
           let apodImages = parsedData.reverse();
+
+          // TODO: Maybe add a check not to add dupes?
+          appStorage.setItem(
+            "apodData",
+            JSON.stringify(cachedData.concat(apodImages))
+          );
           dispatch({ type: "STACK_IMAGES", apodImages });
           dispatch({ type: "FETCHING_IMAGES", fetching: false });
         })
@@ -20,10 +30,8 @@ export const useFetch = (data, dispatch, initialRender, isFetching) => {
           dispatch({ type: "FETCHING_IMAGES", fetching: false });
           return e;
         });
-    } else {
-      initialRender.current = false;
     }
-  }, [dispatch, data.page, isFetching, initialRender]);
+  }, [dispatch, data.page]);
 };
 
 // infinite scrolling with intersection observer
@@ -32,13 +40,19 @@ export const useInfiniteScroll = (scrollRef, dispatch) => {
     (node) => {
       new IntersectionObserver((entries) => {
         entries.forEach((en) => {
-          if (en.intersectionRatio > 0) {
+          // If the div being observed is even slightly visible, fetch new page
+          // But make sure it's below a certain point in the page or else we will fetch twice
+          // in initial render
+          if (
+            en.intersectionRatio > 0 &&
+            scrollRef.current.getBoundingClientRect().top > 500
+          ) {
             dispatch({ type: "ADVANCE_PAGE" });
           }
         });
       }).observe(node);
     },
-    [dispatch]
+    [dispatch, scrollRef]
   );
 
   useEffect(() => {
