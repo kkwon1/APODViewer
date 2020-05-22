@@ -2,24 +2,28 @@ import { useEffect, useCallback, useRef } from "react";
 import { BASE_URL } from "../../Constants";
 
 // make API calls and pass the returned data via dispatch
-export const useFetch = (data, dispatch) => {
+export const useFetch = (data, dispatch, initialRender, isFetching) => {
   useEffect(() => {
-    dispatch({ type: "FETCHING_IMAGES", fetching: true });
-    fetch(`${BASE_URL}apod/batch/?count=30&page=${data.page}`)
-      .then((data) => data.json())
-      .then((images) => {
-        // Decode from base64 to string, and then parse the object
-        let parsedData = JSON.parse(atob(images));
-        let inorderData = parsedData.reverse();
-        dispatch({ type: "STACK_IMAGES", inorderData });
-        dispatch({ type: "FETCHING_IMAGES", fetching: false });
-      })
-      .catch((e) => {
-        // handle error
-        dispatch({ type: "FETCHING_IMAGES", fetching: false });
-        return e;
-      });
-  }, [dispatch, data.page]);
+    if (!initialRender.current) {
+      dispatch({ type: "FETCHING_IMAGES", fetching: true });
+      fetch(`${BASE_URL}apod/batch/?count=30&page=${data.page}`)
+        .then((data) => data.json())
+        .then((images) => {
+          // Decode from base64 to string, and then parse the object
+          let parsedData = JSON.parse(atob(images));
+          let apodImages = parsedData.reverse();
+          dispatch({ type: "STACK_IMAGES", apodImages });
+          dispatch({ type: "FETCHING_IMAGES", fetching: false });
+        })
+        .catch((e) => {
+          // handle error
+          dispatch({ type: "FETCHING_IMAGES", fetching: false });
+          return e;
+        });
+    } else {
+      initialRender.current = false;
+    }
+  }, [dispatch, data.page, isFetching, initialRender]);
 };
 
 // infinite scrolling with intersection observer

@@ -42,37 +42,37 @@ const LoadingContainer = styled(CircularProgress)`
   padding: 5rem;
 `;
 
+const apodReducer = (state, action) => {
+  switch (action.type) {
+    case "STACK_IMAGES":
+      return { ...state, apods: state.apods.concat(action.apodImages) };
+    case "FETCHING_IMAGES":
+      return { ...state, fetching: action.fetching };
+    default:
+      return state;
+  }
+};
+
+const pageReducer = (state, action) => {
+  switch (action.type) {
+    case "ADVANCE_PAGE":
+      return { ...state, page: state.page + 1 };
+    default:
+      return state;
+  }
+};
+
 function Main() {
   const [userDataState] = UserDataFetcher(`${BASE_URL}users/data/`);
-
-  const apodReducer = (state, action) => {
-    switch (action.type) {
-      case "STACK_IMAGES":
-        return { ...state, apods: state.apods.concat(action.inorderData) };
-      case "FETCHING_IMAGES":
-        return { ...state, fetching: action.fetching };
-      default:
-        return state;
-    }
-  };
-
-  const pageReducer = (state, action) => {
-    switch (action.type) {
-      case "ADVANCE_PAGE":
-        return { ...state, page: state.page + 1 };
-      default:
-        return state;
-    }
-  };
-
   const [pager, pagerDispatch] = useReducer(pageReducer, { page: 0 });
   const [apodData, apodDispatch] = useReducer(apodReducer, {
     apods: [],
     fetching: true,
   });
 
+  let initialRender = useRef(true);
   let bottomBoundaryRef = useRef(null);
-  useFetch(pager, apodDispatch);
+  useFetch(pager, apodDispatch, initialRender);
   useLazyLoading(".apod-tile", apodData.apods);
   useInfiniteScroll(bottomBoundaryRef, pagerDispatch);
 
