@@ -13,14 +13,12 @@ dotenv.config();
 
 const routing = (
   <Router>
+    <ScrollToTop />
     <Fragment>
-      <ScrollToTop />
-      <div>
-        <NavBar />
-        <Route exact path="/" component={Main} />
-        <Route exact path="/apod" component={APODViewer} />
-        <Route exact path="/login" component={Login} />
-      </div>
+      <NavBar />
+      <Route exact path="/" component={Main} />
+      <Route exact path="/apod" component={APODViewer} />
+      <Route exact path="/login" component={Login} />
     </Fragment>
   </Router>
 );

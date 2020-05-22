@@ -56,7 +56,11 @@ function UserDataFetcher(url) {
               });
           });
         } else {
-          // TODO: Raise an error
+          setUserDataState({
+            ...userDataState,
+            userData: cachedData,
+            isFetching: false,
+          });
         }
       });
     } else {
@@ -73,7 +77,7 @@ function UserDataFetcher(url) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return [];
+  return [userDataState];
 }
 
 export default UserDataFetcher;
