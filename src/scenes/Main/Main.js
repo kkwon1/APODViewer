@@ -1,6 +1,5 @@
 import React, { useReducer, useRef } from "react";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
 import GridList from "@material-ui/core/GridList";
 import GridListTile from "@material-ui/core/GridListTile";
 import Container from "@material-ui/core/Container";
@@ -92,21 +91,13 @@ function Main() {
         <GridList spacing={10} cellHeight={300} cols={3}>
           {apodData.apods.map((apodTile, index) => (
             <GridListTile key={apodTile.date} cols={1}>
-              <Link
-                to={{
-                  pathname: "/apod",
-                  state: {
-                    currentIndex: index,
-                  },
-                }}
-              >
-                <ApodThumbnail
-                  className="apod-tile"
-                  mediaType={apodTile.media_type}
-                  title={apodTile.title}
-                  url={apodTile.url}
-                />
-              </Link>
+              <ApodThumbnail
+                className="apod-tile"
+                mediaType={apodTile.media_type}
+                title={apodTile.title}
+                url={apodTile.url}
+                description={apodTile.explanation}
+              />
             </GridListTile>
           ))}
         </GridList>

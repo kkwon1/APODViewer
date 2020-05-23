@@ -1,5 +1,6 @@
 import { useEffect, useCallback, useRef } from "react";
-import { BASE_URL } from "../../Constants";
+import { BASE_URL, DATE_FORMAT } from "../../Constants";
+import moment from "moment";
 
 const appStorage = window.localStorage;
 // make API calls and pass the returned data via dispatch
@@ -7,9 +8,10 @@ export const useFetch = (data, dispatch) => {
   useEffect(() => {
     let rawApodData = appStorage.getItem("apodData");
     let cachedData = JSON.parse(rawApodData);
-    if (!cachedData) cachedData = [];
+    if ((cachedData && dataIsStale(cachedData[0])) || !cachedData)
+      cachedData = [];
     dispatch({ type: "FETCHING_IMAGES", fetching: true });
-    if (data.page >= Math.floor(cachedData.length / 30)) {
+    if (data.page === 0 || data.page > Math.floor(cachedData.length / 30)) {
       fetch(`${BASE_URL}apod/batch/?count=30&page=${data.page}`)
         .then((data) => data.json())
         .then((images) => {
@@ -94,3 +96,9 @@ export const useLazyLoading = (imgSelector, items) => {
     }
   }, [imgObserver, imagesRef, imgSelector, items]);
 };
+
+function dataIsStale(latestApod) {
+  let now = moment().format(DATE_FORMAT);
+
+  return now > latestApod.date;
+}

@@ -8,7 +8,7 @@ import moment from "moment";
 import Typography from "@material-ui/core/Typography";
 import ActionsContainer from "./ActionsContainer";
 import MediaDisplayer from "./MediaDisplayer";
-import ApodUtils from "../utils/ApodUtils";
+import ApodUtils from "../../../utils/ApodUtils";
 import { DATE_FORMAT } from "../../../Constants";
 import Copyright from "../hooks/Copyright";
 
