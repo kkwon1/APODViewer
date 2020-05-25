@@ -1,6 +1,8 @@
-import React from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import styled from "styled-components";
 import PlayCircleFilledIcon from "@material-ui/icons/PlayCircleFilled";
+import Modal from "@material-ui/core/Modal";
+import ApodViewerModal from "../../ApodViewerModal/ApodViewerModal";
 
 const Image = styled.div`
   display: flex;
@@ -9,6 +11,7 @@ const Image = styled.div`
   background-size: cover;
   border-radius: 0.5rem;
   background-position: center;
+  cursor: pointer;
 `;
 
 const PlaceHolder = styled.div`
@@ -20,6 +23,21 @@ const PlaceHolder = styled.div`
   justify-content: center;
   align-items: center;
 `;
+
+const ModalContainer = styled.div`
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+`;
+
+// const ModalImage = styled.img`
+//   display: flex;
+//   height: 95%;
+//   width: auto;
+//   border-radius: 10px;
+// `;
 /*
 const Video = styled.iframe`
   display: flex;
@@ -30,25 +48,64 @@ const Video = styled.iframe`
 */
 
 // TODO:  for "Video" case, use an appropriate thumbnail
-class ApodThumbnail extends React.Component {
-  render() {
-    switch (this.props.mediaType) {
-      case "video":
-        return (
-          <PlaceHolder>
-            <PlayCircleFilledIcon fontSize="large" />
-          </PlaceHolder>
-        );
-      // Capture image case
-      default:
-        return (
+const ApodThumbnail = (props) => {
+  const [mediaType, setMediatype] = useState(null);
+  const [url, setUrl] = useState("");
+  const [title, setTitle] = useState("");
+  const [open, setOpen] = useState(false);
+
+  const handleOpen = () => {
+    props.setApod(props.currentIndex);
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const body = (
+    <ModalContainer>
+      {/* // <ModalContainer onClick={handleClose}> */}
+      <ApodViewerModal
+        apod={props.currentApod}
+        prevApod={props.prevApod}
+        nextApod={props.nextApod}
+      />
+    </ModalContainer>
+  );
+
+  useEffect(() => {
+    setMediatype(props.mediaType);
+    setUrl(props.url);
+    setTitle(props.title);
+  }, [props.hdurl, props.mediaType, props.title, props.url]);
+
+  return (
+    <Fragment>
+      {mediaType === "video" ? (
+        <PlaceHolder>
+          <PlayCircleFilledIcon fontSize="large" />
+        </PlaceHolder>
+      ) : (
+        <Fragment>
+          {" "}
           <Image
-            alt={this.props.title}
-            style={{ backgroundImage: `url(${this.props.url})` }}
+            onClick={handleOpen}
+            alt={title}
+            style={{ backgroundImage: `url(${url})` }}
           />
-        );
-    }
-  }
-}
+          <Modal
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="simple-modal-title"
+            aria-describedby="simple-modal-description"
+          >
+            {body}
+          </Modal>
+        </Fragment>
+      )}
+    </Fragment>
+  );
+};
 
 export default ApodThumbnail;

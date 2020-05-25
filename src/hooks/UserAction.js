@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
 import * as firebase from "firebase/app";
 import "firebase/auth";
-import ApodUtils from "../scenes/APODViewer/utils/ApodUtils";
+import ApodUtils from "../utils/ApodUtils";
 
 const apodUtils = new ApodUtils();
 
