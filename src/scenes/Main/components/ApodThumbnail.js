@@ -55,6 +55,7 @@ const ApodThumbnail = (props) => {
   const [open, setOpen] = useState(false);
 
   const handleOpen = () => {
+    props.setApod(props.currentIndex);
     setOpen(true);
   };
 
@@ -66,9 +67,9 @@ const ApodThumbnail = (props) => {
     <ModalContainer>
       {/* // <ModalContainer onClick={handleClose}> */}
       <ApodViewerModal
-        title={props.title}
-        url={props.url}
-        description={props.description}
+        apod={props.currentApod}
+        prevApod={props.prevApod}
+        nextApod={props.nextApod}
       />
     </ModalContainer>
   );

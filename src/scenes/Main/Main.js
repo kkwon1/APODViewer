@@ -1,4 +1,4 @@
-import React, { useReducer, useRef } from "react";
+import React, { useReducer, useRef, useState, useEffect } from "react";
 import styled from "styled-components";
 import GridList from "@material-ui/core/GridList";
 import GridListTile from "@material-ui/core/GridListTile";
@@ -75,11 +75,34 @@ function Main() {
     apods: cachedData,
     fetching: true,
   });
+  const [currentApod, setCurrentApod] = useState(null);
+  const [currentIndex, setCurrentIndex] = useState(-1);
 
   let bottomBoundaryRef = useRef(null);
   useFetch(pager, apodDispatch);
   useLazyLoading(".apod-tile", apodData.apods);
   useInfiniteScroll(bottomBoundaryRef, pagerDispatch);
+
+  const setApod = (index) => {
+    setCurrentIndex(index);
+    setCurrentApod(apodData.apods[index]);
+  };
+
+  const prevApod = () => {
+    if (currentIndex > 0) {
+      let newIndex = currentIndex - 1;
+      setCurrentIndex(newIndex);
+      setCurrentApod(apodData.apods[newIndex]);
+    }
+  };
+
+  const nextApod = () => {
+    if (currentIndex < apodData.apods.length) {
+      let newIndex = currentIndex + 1;
+      setCurrentIndex(newIndex);
+      setCurrentApod(apodData.apods[newIndex]);
+    }
+  };
 
   return (
     <MainContainer>
@@ -97,6 +120,11 @@ function Main() {
                 title={apodTile.title}
                 url={apodTile.url}
                 description={apodTile.explanation}
+                currentIndex={index}
+                setApod={setApod}
+                prevApod={prevApod}
+                nextApod={nextApod}
+                currentApod={currentApod}
               />
             </GridListTile>
           ))}
