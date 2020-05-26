@@ -5,14 +5,13 @@ import CardContent from "@material-ui/core/CardContent";
 import CardActions from "@material-ui/core/CardActions";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
-import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
-import BookmarkBorderIcon from "@material-ui/icons/BookmarkBorder";
 import ArrowForwardIosRoundedIcon from "@material-ui/icons/ArrowForwardIosRounded";
 import ArrowBackIosRoundedIcon from "@material-ui/icons/ArrowBackIosRounded";
 import FullscreenRoundedIcon from "@material-ui/icons/FullscreenRounded";
 import ApodUtils from "../../utils/ApodUtils";
 import Modal from "@material-ui/core/Modal";
 import Copyright from "./Copyright";
+import ActionsContainer from "./ActionsContainer";
 
 const Container = styled.div`
   display: flex;
@@ -22,6 +21,11 @@ const CardContainer = styled(Card)`
   width: 1000px;
   height: 900px;
   overflow: overlay !important;
+`;
+
+const CardActionsContainer = styled(CardActions)`
+  display: flex;
+  justify-content: space-between;
 `;
 
 const Header = styled(Typography)`
@@ -124,7 +128,7 @@ const ApodViewerModal = (props) => {
 
   const body = (
     <ModalContainer onClick={handleClose}>
-      <ModalImage src={props.apod.url} />
+      <ModalImage src={props.currentApod.apod.url} />
     </ModalContainer>
   );
 
@@ -136,10 +140,10 @@ const ApodViewerModal = (props) => {
         </IconButton>
       </ButtonContainer>
       <CardContainer>
-        <Header variant="h4">{props.apod.title}</Header>
+        <Header variant="h4">{props.currentApod.apod.title}</Header>
         <Image
           style={{
-            backgroundImage: `url(${props.apod.url})`,
+            backgroundImage: `url(${props.currentApod.apod.url})`,
           }}
         >
           <FullScreenIcon
@@ -156,23 +160,21 @@ const ApodViewerModal = (props) => {
         >
           {body}
         </Modal>
-        <CardActions>
-          <IconButton disableRipple={false} disableFocusRipple={true}>
-            <FavoriteBorderIcon fontSize="large" />
-          </IconButton>
-          <IconButton disableRipple={false} disableFocusRipple={true}>
-            <BookmarkBorderIcon fontSize="large" />
-          </IconButton>
-          <Copyright copyright={props.apod.copyright} />
-        </CardActions>
+        <CardActionsContainer>
+          <ActionsContainer
+            currentApod={props.currentApod}
+            action={props.action}
+          />
+          <Copyright copyright={props.currentApod.apod.copyright} />
+        </CardActionsContainer>
         <CardContent>
           {currentDescExpand ? (
             <Typography variant="body1" component="p">
-              {props.apod.explanation}
+              {props.currentApod.apod.explanation}
             </Typography>
           ) : (
             <Typography variant="body1" component="p">
-              {apodUtils.displayText(props.apod.explanation)}
+              {apodUtils.displayText(props.currentApod.apod.explanation)}
               <MoreButton onClick={() => setExpand(true)}>more</MoreButton>
             </Typography>
           )}

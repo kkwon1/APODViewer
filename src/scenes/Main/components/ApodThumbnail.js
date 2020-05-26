@@ -67,9 +67,10 @@ const ApodThumbnail = (props) => {
     <ModalContainer>
       <ApodViewerModal
         closeModal={handleClose}
-        apod={props.currentApod}
+        currentApod={props.currentApod}
         prevApod={props.prevApod}
         nextApod={props.nextApod}
+        action={props.action}
       />
     </ModalContainer>
   );
