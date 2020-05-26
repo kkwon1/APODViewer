@@ -1,7 +1,6 @@
 import React, { Fragment } from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
-import APODViewer from "./scenes/APODViewer/ApodViewer";
 import Main from "./scenes/Main/Main";
 import * as serviceWorker from "./serviceWorker";
 import { Route, BrowserRouter as Router } from "react-router-dom";
@@ -17,7 +16,6 @@ const routing = (
     <Fragment>
       <NavBar />
       <Route exact path="/" component={Main} />
-      <Route exact path="/apod" component={APODViewer} />
       <Route exact path="/login" component={Login} />
     </Fragment>
   </Router>

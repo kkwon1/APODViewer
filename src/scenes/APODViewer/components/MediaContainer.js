@@ -10,7 +10,6 @@ import ActionsContainer from "./ActionsContainer";
 import MediaDisplayer from "./MediaDisplayer";
 import ApodUtils from "../../../utils/ApodUtils";
 import { DATE_FORMAT } from "../../../Constants";
-import Copyright from "../hooks/Copyright";
 
 const MainContainer = styled(Container)`
   display: flex;
@@ -164,7 +163,6 @@ class MediaContainer extends React.Component {
         </MediaSection>
         <ActionCopyrightContainer>
           <ActionsContainer currentApod={this.state} />
-          <Copyright copyright={this.state.copyright} />
         </ActionCopyrightContainer>
         {this.state.expandDetails ? (
           <TextContainer>

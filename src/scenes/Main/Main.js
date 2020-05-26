@@ -47,6 +47,8 @@ const apodReducer = (state, action) => {
       return { ...state, apods: state.apods.concat(action.apodImages) };
     case "FETCHING_IMAGES":
       return { ...state, fetching: action.fetching };
+    case "CLEAN_CACHE":
+      return { ...state, apods: [] };
     default:
       return state;
   }
@@ -97,7 +99,7 @@ function Main() {
   };
 
   const nextApod = () => {
-    if (currentIndex < apodData.apods.length) {
+    if (currentIndex + 1 < apodData.apods.length) {
       let newIndex = currentIndex + 1;
       setCurrentIndex(newIndex);
       setCurrentApod(apodData.apods[newIndex]);

@@ -8,8 +8,11 @@ export const useFetch = (data, dispatch) => {
   useEffect(() => {
     let rawApodData = appStorage.getItem("apodData");
     let cachedData = JSON.parse(rawApodData);
-    if ((cachedData && dataIsStale(cachedData[0])) || !cachedData)
+    if ((cachedData && dataIsStale(cachedData[0])) || !cachedData) {
       cachedData = [];
+      appStorage.setItem("apodData", JSON.stringify(cachedData));
+      dispatch({ type: "CLEAN_CACHE" });
+    }
     dispatch({ type: "FETCHING_IMAGES", fetching: true });
     if (data.page === 0 || data.page > Math.floor(cachedData.length / 30)) {
       fetch(`${BASE_URL}apod/batch/?count=30&page=${data.page}`)
