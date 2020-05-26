@@ -76,6 +76,11 @@ const FullScreenIcon = styled(FullscreenRoundedIcon)`
   cursor: pointer;
 `;
 
+const DateText = styled(Typography)`
+  color: grey;
+  padding-bottom: 10px;
+`;
+
 const apodUtils = new ApodUtils();
 
 const ApodViewerModal = (props) => {
@@ -168,6 +173,9 @@ const ApodViewerModal = (props) => {
           <Copyright copyright={props.currentApod.apod.copyright} />
         </CardActionsContainer>
         <CardContent>
+          <DateText variant="body1" component="p">
+            {props.currentApod.apod.date}
+          </DateText>
           {currentDescExpand ? (
             <Typography variant="body1" component="p">
               {props.currentApod.apod.explanation}
