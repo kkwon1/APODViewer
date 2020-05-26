@@ -47,6 +47,8 @@ const apodReducer = (state, action) => {
       return { ...state, apods: state.apods.concat(action.apodImages) };
     case "FETCHING_IMAGES":
       return { ...state, fetching: action.fetching };
+    case "CLEAN_CACHE":
+      return { ...state, apods: [] };
     default:
       return state;
   }
@@ -67,6 +69,7 @@ function Main() {
   let rawApodData = appStorage.getItem("apodData");
   let cachedData = JSON.parse(rawApodData);
   if (!cachedData) cachedData = [];
+
   const [userDataState] = UserDataFetcher(`${BASE_URL}users/data/`);
   const [pager, pagerDispatch] = useReducer(pageReducer, {
     page: Math.floor(cachedData.length / 30),
@@ -75,8 +78,15 @@ function Main() {
     apods: cachedData,
     fetching: true,
   });
-  const [currentApod, setCurrentApod] = useState(null);
+  const [modalApod, setModalApod] = useState({
+    apod: null,
+    isLiked: false,
+    isSaved: false,
+  });
   const [currentIndex, setCurrentIndex] = useState(-1);
+
+  const [likeDates, setLikeDates] = useState([]);
+  const [saveDates, setSaveDates] = useState([]);
 
   let bottomBoundaryRef = useRef(null);
   useFetch(pager, apodDispatch);
@@ -85,24 +95,98 @@ function Main() {
 
   const setApod = (index) => {
     setCurrentIndex(index);
-    setCurrentApod(apodData.apods[index]);
+    let apod = apodData.apods[index];
+    setModalApod({
+      apod: apod,
+      isLiked: apodIsLiked(apod),
+      isSaved: apodIsSaved(apod),
+    });
   };
 
   const prevApod = () => {
     if (currentIndex > 0) {
       let newIndex = currentIndex - 1;
       setCurrentIndex(newIndex);
-      setCurrentApod(apodData.apods[newIndex]);
+
+      let apod = apodData.apods[newIndex];
+      setModalApod({
+        apod: apod,
+        isLiked: apodIsLiked(apod),
+        isSaved: apodIsSaved(apod),
+      });
     }
   };
 
   const nextApod = () => {
-    if (currentIndex < apodData.apods.length) {
+    if (currentIndex + 1 < apodData.apods.length) {
       let newIndex = currentIndex + 1;
       setCurrentIndex(newIndex);
-      setCurrentApod(apodData.apods[newIndex]);
+      let apod = apodData.apods[newIndex];
+      setModalApod({
+        apod: apod,
+        isLiked: apodIsLiked(apod),
+        isSaved: apodIsSaved(apod),
+      });
     }
   };
+
+  const updateLikeSave = (action, apodDate) => {
+    let currentLikeDates = likeDates;
+    let currentSaveDates = saveDates;
+    switch (action) {
+      case "like":
+        // append to likeDates
+        currentLikeDates.push(apodDate);
+        setLikeDates(currentLikeDates);
+        setModalApod({
+          ...modalApod,
+          isLiked: true,
+        });
+        break;
+      case "unlike":
+        // remove from likeDates
+        removeItem(currentLikeDates, apodDate);
+        setLikeDates(currentLikeDates);
+        setModalApod({
+          ...modalApod,
+          isLiked: false,
+        });
+        break;
+      case "save":
+        // append to saveDates
+        currentSaveDates.push(apodDate);
+        setSaveDates(currentSaveDates);
+        setModalApod({
+          ...modalApod,
+          isSaved: true,
+        });
+        break;
+      case "unsave":
+        // remove from saveDates
+        removeItem(currentSaveDates, apodDate);
+        setSaveDates(currentLikeDates);
+        setModalApod({
+          ...modalApod,
+          isSaved: false,
+        });
+        break;
+      default:
+        break;
+    }
+  };
+
+  const apodIsLiked = (apod) => {
+    return likeDates.includes(apod.date);
+  };
+
+  const apodIsSaved = (apod) => {
+    return saveDates.includes(apod.date);
+  };
+
+  useEffect(() => {
+    setLikeDates(getLikeDates(userDataState.userData));
+    setSaveDates(getSaveDates(userDataState.userData));
+  }, [userDataState.userData]);
 
   return (
     <MainContainer>
@@ -124,7 +208,8 @@ function Main() {
                 setApod={setApod}
                 prevApod={prevApod}
                 nextApod={nextApod}
-                currentApod={currentApod}
+                action={updateLikeSave}
+                currentApod={modalApod}
               />
             </GridListTile>
           ))}
@@ -136,6 +221,26 @@ function Main() {
       <div ref={bottomBoundaryRef} />
     </MainContainer>
   );
+}
+
+function getLikeDates(parsedUserData) {
+  return parsedUserData && parsedUserData.UserLikes
+    ? parsedUserData.UserLikes.map((s) => s.ApodDate)
+    : [];
+}
+
+function getSaveDates(parsedUserData) {
+  return parsedUserData && parsedUserData.UserSaves
+    ? parsedUserData.UserSaves.map((s) => s.ApodDate)
+    : [];
+}
+
+function removeItem(array, key) {
+  let index = array.indexOf(key);
+  if (index > -1) {
+    array.splice(index, 1);
+  }
+  return array;
 }
 
 export default Main;

@@ -1,20 +1,31 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import styled from "styled-components";
-import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import CardActions from "@material-ui/core/CardActions";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
-import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
-import BookmarkBorderIcon from "@material-ui/icons/BookmarkBorder";
+import ArrowForwardIosRoundedIcon from "@material-ui/icons/ArrowForwardIosRounded";
+import ArrowBackIosRoundedIcon from "@material-ui/icons/ArrowBackIosRounded";
+import FullscreenRoundedIcon from "@material-ui/icons/FullscreenRounded";
 import ApodUtils from "../../utils/ApodUtils";
 import Modal from "@material-ui/core/Modal";
+import Copyright from "./Copyright";
+import ActionsContainer from "./ActionsContainer";
+
+const Container = styled.div`
+  display: flex;
+`;
 
 const CardContainer = styled(Card)`
   width: 1000px;
   height: 900px;
   overflow: overlay !important;
+`;
+
+const CardActionsContainer = styled(CardActions)`
+  display: flex;
+  justify-content: space-between;
 `;
 
 const Header = styled(Typography)`
@@ -30,7 +41,8 @@ const Image = styled.div`
   width: 1000px;
   background-size: cover;
   background-position: center;
-  cursor: pointer;
+  justify-content: flex-end;
+  align-items: flex-end;
 `;
 
 const MoreButton = styled.span`
@@ -43,22 +55,37 @@ const ModalContainer = styled.div`
   display: flex;
   width: 100%;
   height: 100%;
+  background-color: black;
   align-items: center;
   justify-content: center;
 `;
 
 const ModalImage = styled.img`
   display: flex;
-  height: 95%;
+  height: 100%;
   width: auto;
-  border-radius: 10px;
+`;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const FullScreenIcon = styled(FullscreenRoundedIcon)`
+  padding: 20px;
+  cursor: pointer;
+`;
+
+const DateText = styled(Typography)`
+  color: grey;
+  padding-bottom: 10px;
 `;
 
 const apodUtils = new ApodUtils();
 
 const ApodViewerModal = (props) => {
+  const node = useRef();
   const [currentDescExpand, setExpand] = useState(false);
-
   const [open, setOpen] = useState(false);
 
   const handleOpen = () => {
@@ -69,56 +96,104 @@ const ApodViewerModal = (props) => {
     setOpen(false);
   };
 
+  const handleClick = useCallback(
+    (e) => {
+      if (node.current.contains(e.target)) {
+        return;
+      }
+
+      if (!open) {
+        props.closeModal();
+      }
+    },
+    [open, props]
+  );
+
+  const handleKeyDown = useCallback(
+    (event) => {
+      if (event.key === "ArrowRight") {
+        props.nextApod();
+      } else if (event.key === "ArrowLeft") {
+        props.prevApod();
+      }
+    },
+    [props]
+  );
+
   useEffect(() => {
     setExpand(false);
-  }, []);
+    document.addEventListener("keydown", handleKeyDown);
+    document.addEventListener("mousedown", handleClick);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener("mousedown", handleClick);
+    };
+  }, [handleClick, handleKeyDown]);
 
   const body = (
     <ModalContainer onClick={handleClose}>
-      <ModalImage src={props.apod.url} />
+      <ModalImage src={props.currentApod.apod.url} />
     </ModalContainer>
   );
 
   return (
-    <CardContainer>
-      <Header variant="h4">{props.apod.title}</Header>
-      <Image
-        onClick={handleOpen}
-        style={{
-          backgroundImage: `url(${props.apod.url})`,
-        }}
-      />
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="simple-modal-title"
-        aria-describedby="simple-modal-description"
-      >
-        {body}
-      </Modal>
-      <CardActions>
-        <IconButton disableRipple={false} disableFocusRipple={true}>
-          <FavoriteBorderIcon fontSize="large" />
+    <Container ref={node}>
+      <ButtonContainer>
+        <IconButton style={{ color: "white" }} onClick={props.prevApod}>
+          <ArrowBackIosRoundedIcon fontSize="large" />
         </IconButton>
-        <IconButton disableRipple={false} disableFocusRipple={true}>
-          <BookmarkBorderIcon fontSize="large" />
+      </ButtonContainer>
+      <CardContainer>
+        <Header variant="h4">{props.currentApod.apod.title}</Header>
+        <Image
+          style={{
+            backgroundImage: `url(${props.currentApod.apod.url})`,
+          }}
+        >
+          <FullScreenIcon
+            onClick={handleOpen}
+            style={{ color: "white" }}
+            fontSize="large"
+          />
+        </Image>
+        <Modal
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="simple-modal-title"
+          aria-describedby="simple-modal-description"
+        >
+          {body}
+        </Modal>
+        <CardActionsContainer>
+          <ActionsContainer
+            currentApod={props.currentApod}
+            action={props.action}
+          />
+          <Copyright copyright={props.currentApod.apod.copyright} />
+        </CardActionsContainer>
+        <CardContent>
+          <DateText variant="body1" component="p">
+            {props.currentApod.apod.date}
+          </DateText>
+          {currentDescExpand ? (
+            <Typography variant="body1" component="p">
+              {props.currentApod.apod.explanation}
+            </Typography>
+          ) : (
+            <Typography variant="body1" component="p">
+              {apodUtils.displayText(props.currentApod.apod.explanation)}
+              <MoreButton onClick={() => setExpand(true)}>more</MoreButton>
+            </Typography>
+          )}
+        </CardContent>
+      </CardContainer>
+      <ButtonContainer>
+        <IconButton style={{ color: "white" }} onClick={props.nextApod}>
+          <ArrowForwardIosRoundedIcon fontSize="large" />
         </IconButton>
-      </CardActions>
-      <CardContent>
-        {currentDescExpand ? (
-          <Typography variant="body1" component="p">
-            {props.apod.explanation}
-          </Typography>
-        ) : (
-          <Typography variant="body1" component="p">
-            {apodUtils.displayText(props.apod.explanation)}
-            <MoreButton onClick={() => setExpand(true)}>more</MoreButton>
-          </Typography>
-        )}
-      </CardContent>
-      <Button onClick={props.prevApod}>Prev</Button>
-      <Button onClick={props.nextApod}>Next</Button>
-    </CardContainer>
+      </ButtonContainer>
+    </Container>
   );
 };
 
