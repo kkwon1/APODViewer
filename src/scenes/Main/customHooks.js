@@ -101,7 +101,10 @@ export const useLazyLoading = (imgSelector, items) => {
 };
 
 function dataIsStale(latestApod) {
-  let now = moment().format(DATE_FORMAT);
+  if (latestApod) {
+    let now = moment().format(DATE_FORMAT);
 
-  return now > latestApod.date;
+    return now > latestApod.date;
+  }
+  return true;
 }
