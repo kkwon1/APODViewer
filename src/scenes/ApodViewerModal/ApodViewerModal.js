@@ -12,15 +12,36 @@ import ApodUtils from "../../utils/ApodUtils";
 import Modal from "@material-ui/core/Modal";
 import Copyright from "./Copyright";
 import ActionsContainer from "./ActionsContainer";
+import { DEVICE } from "../../Constants";
 
 const Container = styled.div`
   display: flex;
 `;
 
 const CardContainer = styled(Card)`
-  width: 1000px;
-  height: 900px;
+  @media ${DEVICE.tablet} {
+    width: 600px
+    height: 500px;
+  }
+  @media ${DEVICE.laptop} {
+    width: 800px
+    height: 700px;
+  }
+  @media ${DEVICE.laptopL} {
+    width: 900px
+    height: 800px;
+  }
+  @media ${DEVICE.desktop} {
+    width: 1000px
+    height: 900px;
+  }
   overflow: overlay !important;
+  ::-webkit-scrollbar {
+    width: 0px;
+    background: transparent; /* make scrollbar transparent */
+  }
+  overflow: -moz-scrollbars-none;
+  -ms-overflow-style: none;
 `;
 
 const CardActionsContainer = styled(CardActions)`
@@ -37,8 +58,8 @@ const Header = styled(Typography)`
 
 const Image = styled.div`
   display: flex;
-  height: 600px;
-  width: 1000px;
+  height: 65%;
+  width: 100%;
   background-size: cover;
   background-position: center;
   justify-content: flex-end;
@@ -51,7 +72,7 @@ const MoreButton = styled.span`
   text-align: center;
 `;
 
-const ModalContainer = styled.div`
+const FullScreenModalContainer = styled.div`
   display: flex;
   width: 100%;
   height: 100%;
@@ -60,7 +81,7 @@ const ModalContainer = styled.div`
   justify-content: center;
 `;
 
-const ModalImage = styled.img`
+const FullScreenModalImage = styled.img`
   display: flex;
   height: 100%;
   width: auto;
@@ -132,9 +153,9 @@ const ApodViewerModal = (props) => {
   }, [handleClick, handleKeyDown]);
 
   const body = (
-    <ModalContainer onClick={handleClose}>
-      <ModalImage src={props.currentApod.apod.url} />
-    </ModalContainer>
+    <FullScreenModalContainer onClick={handleClose}>
+      <FullScreenModalImage src={props.currentApod.apod.url} />
+    </FullScreenModalContainer>
   );
 
   return (

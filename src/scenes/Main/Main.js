@@ -191,7 +191,7 @@ function Main() {
   return (
     <MainContainer>
       <DescriptionContainer>
-        Browse, save and share your favourite Astronomy Picture of the Day!
+        {/* Browse, save and share your favourite Astronomy Picture of the Day! */}
       </DescriptionContainer>
       <BrowseContainer />
       <GridContainer>
