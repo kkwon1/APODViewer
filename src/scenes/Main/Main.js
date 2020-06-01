@@ -1,13 +1,11 @@
 import React, { useReducer, useRef, useState, useEffect } from "react";
 import styled from "styled-components";
-import GridList from "@material-ui/core/GridList";
-import GridListTile from "@material-ui/core/GridListTile";
 import Container from "@material-ui/core/Container";
-import ApodThumbnail from "./components/ApodThumbnail";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { BASE_URL } from "../../Constants";
 import UserDataFetcher from "../../hooks/UserDataFetcher";
 import { useFetch, useInfiniteScroll, useLazyLoading } from "./customHooks";
+import GridView from "../GridView/GridView";
 
 const MainContainer = styled.div`
   display: flex;
@@ -58,6 +56,8 @@ const pageReducer = (state, action) => {
   switch (action.type) {
     case "ADVANCE_PAGE":
       return { ...state, page: state.page + 1 };
+    case "RESET_PAGE":
+      return { ...state, page: 0 };
     default:
       return state;
   }
@@ -89,7 +89,7 @@ function Main() {
   const [saveDates, setSaveDates] = useState([]);
 
   let bottomBoundaryRef = useRef(null);
-  useFetch(pager, apodDispatch);
+  useFetch(pager, apodDispatch, pagerDispatch);
   useLazyLoading(".apod-tile", apodData.apods);
   useInfiniteScroll(bottomBoundaryRef, pagerDispatch);
 
@@ -195,25 +195,14 @@ function Main() {
       </DescriptionContainer>
       <BrowseContainer />
       <GridContainer>
-        <GridList spacing={10} cellHeight={300} cols={3}>
-          {apodData.apods.map((apodTile, index) => (
-            <GridListTile key={apodTile.date} cols={1}>
-              <ApodThumbnail
-                className="apod-tile"
-                mediaType={apodTile.media_type}
-                title={apodTile.title}
-                url={apodTile.url}
-                description={apodTile.explanation}
-                currentIndex={index}
-                setApod={setApod}
-                prevApod={prevApod}
-                nextApod={nextApod}
-                action={updateLikeSave}
-                currentApod={modalApod}
-              />
-            </GridListTile>
-          ))}
-        </GridList>
+        <GridView
+          data={apodData}
+          setApod={setApod}
+          prevApod={prevApod}
+          nextApod={nextApod}
+          updateLikeSave={updateLikeSave}
+          modalApod={modalApod}
+        />
         {(apodData.fetching || userDataState.isFetching) && (
           <LoadingContainer />
         )}

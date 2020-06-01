@@ -154,7 +154,7 @@ const ApodViewerModal = (props) => {
 
   const body = (
     <FullScreenModalContainer onClick={handleClose}>
-      <FullScreenModalImage src={props.currentApod.apod.url} />
+      <FullScreenModalImage src={props.currentApod.apod.ApodURL} />
     </FullScreenModalContainer>
   );
 
@@ -166,10 +166,10 @@ const ApodViewerModal = (props) => {
         </IconButton>
       </ButtonContainer>
       <CardContainer>
-        <Header variant="h4">{props.currentApod.apod.title}</Header>
+        <Header variant="h4">{props.currentApod.apod.ApodName}</Header>
         <Image
           style={{
-            backgroundImage: `url(${props.currentApod.apod.url})`,
+            backgroundImage: `url(${props.currentApod.apod.ApodURL})`,
           }}
         >
           <FullScreenIcon
@@ -191,19 +191,19 @@ const ApodViewerModal = (props) => {
             currentApod={props.currentApod}
             action={props.action}
           />
-          <Copyright copyright={props.currentApod.apod.copyright} />
+          <Copyright copyright={props.currentApod.apod.Copyright} />
         </CardActionsContainer>
         <CardContent>
           <DateText variant="body1" component="p">
-            {props.currentApod.apod.date}
+            {props.currentApod.apod.ApodDate}
           </DateText>
           {currentDescExpand ? (
             <Typography variant="body1" component="p">
-              {props.currentApod.apod.explanation}
+              {props.currentApod.apod.Description}
             </Typography>
           ) : (
             <Typography variant="body1" component="p">
-              {apodUtils.displayText(props.currentApod.apod.explanation)}
+              {apodUtils.displayText(props.currentApod.apod.Description)}
               <MoreButton onClick={() => setExpand(true)}>more</MoreButton>
             </Typography>
           )}

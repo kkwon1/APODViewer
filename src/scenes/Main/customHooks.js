@@ -4,7 +4,7 @@ import moment from "moment";
 
 const appStorage = window.localStorage;
 // make API calls and pass the returned data via dispatch
-export const useFetch = (data, dispatch) => {
+export const useFetch = (data, dispatch, pagerDispatch) => {
   useEffect(() => {
     let rawApodData = appStorage.getItem("apodData");
     let cachedData = JSON.parse(rawApodData);
@@ -12,15 +12,14 @@ export const useFetch = (data, dispatch) => {
       cachedData = [];
       appStorage.setItem("apodData", JSON.stringify(cachedData));
       dispatch({ type: "CLEAN_CACHE" });
+      pagerDispatch({ type: "RESET_PAGE" });
     }
     dispatch({ type: "FETCHING_IMAGES", fetching: true });
     if (data.page === 0 || data.page > Math.floor(cachedData.length / 30)) {
       fetch(`${BASE_URL}apod/batch/?count=30&page=${data.page}`)
         .then((data) => data.json())
         .then((images) => {
-          // Decode from base64 to string, and then parse the object
-          let parsedData = JSON.parse(atob(images));
-          let apodImages = parsedData.reverse();
+          let apodImages = images.reverse();
 
           // TODO: Maybe add a check not to add dupes?
           appStorage.setItem(
@@ -36,7 +35,7 @@ export const useFetch = (data, dispatch) => {
           return e;
         });
     }
-  }, [dispatch, data.page]);
+  }, [dispatch, data.page, pagerDispatch]);
 };
 
 // infinite scrolling with intersection observer
