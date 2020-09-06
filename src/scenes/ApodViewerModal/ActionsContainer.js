@@ -19,11 +19,13 @@ const ActionsContainer = (props) => {
   const [userAction] = UserAction({
     url: `${BASE_URL}users/action/`,
     payload: {
-      ApodURL: props.currentApod.apod.url,
-      ApodName: props.currentApod.apod.title,
-      ApodDate: props.currentApod.apod.date,
-      MediaType: props.currentApod.apod.mediaType,
-      Description: props.currentApod.apod.explanation,
+      ApodURL: props.currentApod.apod.ApodURL,
+      ApodName: props.currentApod.apod.ApodName,
+      ApodDate: props.currentApod.apod.ApodDate,
+      MediaType: props.currentApod.apod.MediaType,
+      Description: props.currentApod.apod.Description,
+      Copyright: props.currentApod.apod.Copyright,
+      ApodHDURL: props.currentApod.apod.ApodHDURL,
       ActionDate: moment(),
     },
   });
@@ -33,19 +35,19 @@ const ActionsContainer = (props) => {
       switch (actionType) {
         case "like":
           if (props.currentApod.isLiked) {
-            props.action("unlike", props.currentApod.apod.date);
+            props.action("unlike", props.currentApod.apod.ApodDate);
             userAction("unlike");
           } else {
-            props.action("like", props.currentApod.apod.date);
+            props.action("like", props.currentApod.apod.ApodDate);
             userAction("like");
           }
           break;
         case "save":
           if (props.currentApod.isSaved) {
-            props.action("unsave", props.currentApod.apod.date);
+            props.action("unsave", props.currentApod.apod.ApodDate);
             userAction("unsave");
           } else {
-            props.action("save", props.currentApod.apod.date);
+            props.action("save", props.currentApod.apod.ApodDate);
             userAction("save");
           }
           break;

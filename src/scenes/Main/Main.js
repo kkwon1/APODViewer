@@ -176,11 +176,11 @@ function Main() {
   };
 
   const apodIsLiked = (apod) => {
-    return likeDates.includes(apod.date);
+    return likeDates.includes(apod.ApodDate);
   };
 
   const apodIsSaved = (apod) => {
-    return saveDates.includes(apod.date);
+    return saveDates.includes(apod.ApodDate);
   };
 
   useEffect(() => {
